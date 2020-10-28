@@ -178,7 +178,6 @@ const Payment: FC<Props> = ({
             balance={accountBalance}
             fee={erc20.spinUpFee}
             currency={erc20.symbol}
-            environment="testwyre"
           ></NoBalanceForm>
         )}
         {!transaction &&

@@ -12,7 +12,6 @@ interface Props {
   balance: string
   fee: number
   currency: string
-  environment: string
   account?: string
   network?: string
   jurisdictionName?: string
@@ -23,7 +22,6 @@ const NoBalanceForm: FC<Props> = ({
   balance,
   fee,
   currency,
-  environment,
   account,
   jurisdictionName,
   dispatch,
@@ -31,18 +29,6 @@ const NoBalanceForm: FC<Props> = ({
   const clickBackHandler = () => {
     dispatch({ type: SET_CURRENT_STEP, payload: 0 })
   }
-
-  // env: 'testwyre',
-  // accountId: 'AC_JEFLTVQQPQH', // put your account number here
-  // auth: {
-  //   type: 'secretKey',
-  //   secretKey: 'SK-4EZV7WXH-HPR9XZ9J-NZ4WDNU7-3YJZ4GQP', // make an API key, put the secret here :)
-  // },
-  // operation: {
-  //   type: 'debitcard',
-  //   destCurrency: currency,
-  //   destAmount: fee,
-  //   dest: `ethereum:${account}`,
 
   type WyreResponseType = {
     url: string
@@ -57,15 +43,15 @@ const NoBalanceForm: FC<Props> = ({
   }
 
   const requestPaymentWyre = () => {
-    console.log(process.env.GATSBY_WYRE_KEY, process.env.GATSBY_WYRE_ID)
     axios
       .post(
         'https://api.testwyre.com/v3/orders/reserve',
         {
           destCurrency: currency,
           paymentMethod: 'debit-card',
-          referenceId: process.env.GATSBY_WYRE_ID,
+          referrerAccountId: process.env.GATSBY_WYRE_ID,
           dest: `ethereum:${account}`,
+          amount: 39,
           lockFields: ['dest', 'destCurrency', 'paymentMethod'],
         },
         options
