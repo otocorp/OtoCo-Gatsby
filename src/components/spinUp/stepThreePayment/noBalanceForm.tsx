@@ -51,19 +51,20 @@ const NoBalanceForm: FC<Props> = ({
 
   const options = {
     headers: {
-      Authorization: 'Bearer xxxxxx',
+      Authorization: process.env.GATSBY_WYRE_KEY,
       'Content-Type': 'application/json',
     },
   }
 
   const requestPaymentWyre = () => {
+    console.log(process.env.GATSBY_WYRE_KEY, process.env.GATSBY_WYRE_ID)
     axios
       .post(
         'https://api.testwyre.com/v3/orders/reserve',
         {
           destCurrency: currency,
           paymentMethod: 'debit-card',
-          referrerAccountId: 'AC_JEFLTVQQPQH',
+          referenceId: process.env.GATSBY_WYRE_ID,
           dest: `ethereum:${account}`,
           lockFields: ['dest', 'destCurrency', 'paymentMethod'],
         },
@@ -121,6 +122,13 @@ const NoBalanceForm: FC<Props> = ({
           </a>{' '}
           using debit-card.
         </div> */}
+        <div>
+          You can also{' '}
+          <a href="#" onClick={requestPaymentWyre}>
+            Buy {currency} with Wyre
+          </a>{' '}
+          using debit-card.
+        </div>
       </div>
       <div className="align-right mt-4">
         <button className="btn btn-primary mr-4" onClick={clickBackHandler}>

@@ -65,6 +65,7 @@ const Dashboard: FC<Props> = ({
   }
 
   React.useEffect(() => {
+    window.env = process.env
     setTimeout(async () => {
       // IF NOT CONNECTED YET
       if (!account) {

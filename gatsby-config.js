@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
+
 module.exports = {
   siteMetadata: {
     title: 'Otoco Web DAPP',
@@ -17,7 +18,7 @@ module.exports = {
       resolve: 'gatsby-plugin-firebase',
       options: {
         credentials: {
-          apiKey: 'AIzaSyDfskU_rkwnxDQ83BoZt4bnhPw_uV2fBao',
+          apiKey: process.env.GATSBY_FIREBASE_KEY,
           authDomain: 'otoco-281518.firebaseapp.com',
           databaseURL: 'https://otoco-281518.firebaseio.com',
           storageBucket: 'otoco-281518.appspot.com',
