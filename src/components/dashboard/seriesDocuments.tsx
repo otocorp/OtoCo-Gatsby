@@ -33,6 +33,25 @@ const SeriesDocuments: FC<Props> = ({
   managing,
   dispatch,
 }: Props) => {
+  const toUnicode = (str: string) => {
+    return str
+      .split('')
+      .map(function (value) {
+        const temp = value.charCodeAt(0).toString(16).toUpperCase()
+        if (temp.length > 2) {
+          return '\\u' + temp
+        }
+        return value
+      })
+      .join('')
+  }
+
+  const removeSpecial = (str: string) => {
+    return toUnicode(str)
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+  }
+
   const exportPDF = async () => {
     if (!managing) return
     console.log(managing)
@@ -45,12 +64,15 @@ const SeriesDocuments: FC<Props> = ({
     if (prefix === 'de')
       page1 = page1.replace(
         '{SERIES}',
-        managing.name.length * 300 - 3000 + ' (' + managing.name
+        managing.name.length * 300 - 3000 + ' ( ' + removeSpecial(managing.name)
       )
     if (prefix === 'wy')
       page1 = page1.replace(
         'OTOCO WY LLC - {SERIES}',
-        managing.name.length * 300 - 3000 + ' (OTOCO WY LLC - ' + managing.name
+        managing.name.length * 300 -
+          3000 +
+          ' (OTOCO WY LLC - ' +
+          removeSpecial(managing.name)
       )
     page1 = page1.replace(
       '0xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
@@ -80,11 +102,12 @@ const SeriesDocuments: FC<Props> = ({
       '0xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
       managing.owner
     )
+    //console.log(page1)
     // Create a new pdf based on Agreeement file
     const newPdf = new PDFAssembler(blob)
     newPdf.getPDFStructure().then(function (pdf) {
-      // console.log(pdf['/Root']['/Pages']['/Kids'][0]['/Contents']['stream']);
-      // console.log(pdf['/Root']['/Pages']['/Kids'][21]['/Contents']['stream']);
+      //console.log(pdf['/Root']['/Pages']['/Kids'][0]['/Contents']['stream'])
+      // console.log(pdf['/Root'])
       // Replace agreement pages for new ones
       // console.log(page1);
       pdf['/Root']['/Pages']['/Kids'][0]['/Contents']['stream'] = page1
