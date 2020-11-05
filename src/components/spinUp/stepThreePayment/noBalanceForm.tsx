@@ -85,7 +85,7 @@ const NoBalanceForm: FC<Props> = ({
         registered address in {jurisdictionName}.
       </p>
       <div className="small">
-        You ony have{' '}
+        You only have{' '}
         <b>
           {balance} {currency}
         </b>{' '}
