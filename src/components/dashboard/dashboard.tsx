@@ -1,4 +1,4 @@
-import React, { FC, Dispatch } from 'react'
+import React, { FC, Dispatch, useState } from 'react'
 import Web3 from 'web3'
 import { connect } from 'react-redux'
 import { CSSTransition } from 'react-transition-group'
@@ -51,6 +51,7 @@ const Dashboard: FC<Props> = ({
   contactForm,
   dispatch,
 }: Props) => {
+  const [error, setError] = useState<string | null>(null)
   const contactFormLastRequest = async () => {
     const now = new Date()
     now.setDate(now.getDate() - 10)
@@ -67,20 +68,36 @@ const Dashboard: FC<Props> = ({
   React.useEffect(() => {
     setTimeout(async () => {
       // IF NOT CONNECTED YET
+      setError(null)
+      dispatch({ type: SET_OWN_SERIES, payload: [] })
       if (!account) {
-        await Web3Integrate.callModal()
-        const web3: Web3 = window.web3
-        const accounts = await web3.eth.getAccounts()
-        dispatch({
-          type: SET_NETWORK,
-          payload: await web3.eth.net.getNetworkType(),
-        })
-        dispatch({ type: SET_ACCOUNT, payload: accounts[0] })
-        return
+        try {
+          await Web3Integrate.callModal()
+          const web3: Web3 = window.web3
+          const accounts = await web3.eth.getAccounts()
+          dispatch({
+            type: SET_NETWORK,
+            payload: await web3.eth.net.getNetworkType(),
+          })
+          dispatch({ type: SET_ACCOUNT, payload: accounts[0] })
+          return
+        } catch (err) {
+          setError('Error connecting wallet. ' + err)
+        }
       }
       // ALREADY CONNECTED
       const web3: Web3 = window.web3
       const ownSeries: SeriesType[] = []
+
+      if (!web3) {
+        setError('Failed to connect wallet.')
+        return
+      }
+      if (!network) {
+        setError('Unknown network.')
+        return
+      }
+      setError(null)
       if (!(await database.getFilling(account))) contactFormLastRequest()
       for (const j of jurisdictionOptions) {
         const seriesAddresses = await MainContract.getContract(network, j.value)
@@ -111,8 +128,10 @@ const Dashboard: FC<Props> = ({
             .call({ from: account })
           ownSeries.push(newSeries)
         }
-
         dispatch({ type: SET_OWN_SERIES, payload: ownSeries })
+        if (ownSeries.length < 1)
+          setError('You own no companies at the moment.')
+        else setError(null)
       }
     }, 0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -157,7 +176,9 @@ const Dashboard: FC<Props> = ({
         <SeriesListing></SeriesListing>
       </CSSTransition>
       <CSSTransition
-        in={!contactForm && series.length == 0 && account !== undefined}
+        in={
+          !contactForm && series.length == 0 && account !== undefined && !error
+        }
         timeout={{
           appear: 200,
           enter: 200,
@@ -175,6 +196,24 @@ const Dashboard: FC<Props> = ({
           </div>
         </div>
       </CSSTransition>
+      {error && (
+        <div className="d-flex justify-content-center">
+          <div className="row">
+            <div className="col-12 text-warning">Warning: {error}</div>
+            {account === null && (
+              <div className="col-12 text-warning">Wallet Not Connected.</div>
+            )}
+            {network === null && (
+              <div className="col-12 text-warning">Invalid Network.</div>
+            )}
+            {network && (
+              <div className="col-12 text-warning">
+                Network selected: {network}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
