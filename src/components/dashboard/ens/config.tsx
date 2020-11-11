@@ -57,7 +57,7 @@ const Config: FC<Props> = ({
   const handleClickVerify = async (event) => {
     setLoading(true)
     if (!selectedName) return
-    if (selectedName.length < 4 || selectedName.length > 30) {
+    if (selectedName.length < 2 || selectedName.length > 30) {
       setError('Keep domain name length biggen than 3 and less than 30')
       setLoading(false)
       return
