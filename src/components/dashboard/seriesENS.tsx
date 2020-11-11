@@ -40,6 +40,11 @@ const SeriesENS: FC<Props> = ({
         OtocoRegistrar.getContract(network)
           .methods.resolve(managing.contract, quantity - 1)
           .call(async (error: any, name: string) => {
+            // Remove WRONGLY set of old Domains
+            if (name.substring(name.length - 9, name.length) == 'otoco.eth') {
+              setLoading(false)
+              return
+            }
             dispatch({
               type: SET_ENS_CONFIG,
               payload: {

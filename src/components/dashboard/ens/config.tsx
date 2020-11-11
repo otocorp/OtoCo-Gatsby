@@ -94,7 +94,7 @@ const Config: FC<Props> = ({
     console.log(network, requestInfo)
     try {
       OtocoRegistrar.getContract(network)
-        .methods.registerAndStore(name, managing?.contract)
+        .methods.registerAndStore(selectedName, managing?.contract)
         .send(requestInfo, (error, hash: string) => {
           console.log(hash)
           setTransaction(hash)
