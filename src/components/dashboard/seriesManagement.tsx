@@ -61,10 +61,14 @@ const SeriesManagement: FC<Props> = ({
             <div>
               Address: <Address address={managing.contract}></Address>
             </div>
+            <div className="small text-warning">
+              Your company address is not a wallet. Please do never send{' '}
+              ether/tokens to this address.
+            </div>
           </div>
           <div>
             <SeriesDocuments></SeriesDocuments>
-            {/* <SeriesENS></SeriesENS> */}
+            <SeriesENS></SeriesENS>
             <SeriesToken></SeriesToken>
           </div>
         </div>
