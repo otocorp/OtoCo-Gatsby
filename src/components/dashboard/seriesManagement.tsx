@@ -64,7 +64,7 @@ const SeriesManagement: FC<Props> = ({
           </div>
           <div>
             <SeriesDocuments></SeriesDocuments>
-            // <SeriesENS></SeriesENS>
+            {/* <SeriesENS></SeriesENS> */}
             <SeriesToken></SeriesToken>
           </div>
         </div>
