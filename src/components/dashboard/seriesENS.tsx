@@ -41,7 +41,7 @@ const SeriesENS: FC<Props> = ({
           .methods.resolve(managing.contract, quantity - 1)
           .call(async (error: any, name: string) => {
             // Remove WRONGLY set of old Domains
-            if (name.substring(name.length - 9, name.length) == 'otoco.eth') {
+            if (!/^[a-z0-9-]*$/.test(name)) {
               setLoading(false)
               return
             }

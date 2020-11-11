@@ -50,8 +50,7 @@ const AddressWidget: FC<Props> = ({ address, network }: Props) => {
               .methods.resolve(address, quantity - 1)
               .call(async (error: any, name: string) => {
                 // Remove WRONGLY set of old Domains
-                if (name.substring(name.length - 9, name.length) == 'otoco.eth')
-                  return
+                if (!/^[a-z0-9-]*$/.test(name)) return
                 await setDisplayAddress(name + '.otoco.eth')
                 await setENS(true)
                 return

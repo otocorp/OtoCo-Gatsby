@@ -55,8 +55,22 @@ const Config: FC<Props> = ({
   }
 
   const handleClickVerify = async (event) => {
+    setError(null)
     setLoading(true)
     if (!selectedName) return
+    if (!/^[a-z0-9-]*$/.test(selectedName)) {
+      setError('Use only lower-case letters, number and dashes.')
+      setLoading(false)
+      return
+    }
+    if (
+      selectedName.charAt(0) == '-' ||
+      selectedName.charAt(selectedName.length - 1) == '-'
+    ) {
+      setError('Name should not start or end with dash.')
+      setLoading(false)
+      return
+    }
     if (selectedName.length < 2 || selectedName.length > 30) {
       setError('Keep domain name length biggen than 3 and less than 30')
       setLoading(false)
@@ -141,6 +155,7 @@ const Config: FC<Props> = ({
         </div>
       )}
       {loading && <p>Loading...</p>}
+      {error && <p className="text-warning small">{error}</p>}
       {domainOwner && domainOwner !== managing?.contract && (
         <p className="text-alert">
           Sorry! This domain has been used. Please Enter Another Domain Name.
@@ -153,7 +168,7 @@ const Config: FC<Props> = ({
       )}
       {status == 'available' && (
         <p className="text-success">
-          This domain is available! To register, click 'Claim Name'.
+          {selectedName} is available! To register, click 'Claim Name'.
         </p>
       )}
       {status == 'typing' && (
