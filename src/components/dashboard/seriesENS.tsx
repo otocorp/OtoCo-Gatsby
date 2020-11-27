@@ -36,37 +36,38 @@ const SeriesENS: FC<Props> = ({
   const [loading, setLoading] = useState(true)
 
   React.useEffect(() => {
-    if (!network || !managing) return
-    const web3: Web3 = window.web3
-    const ens = new ENS(web3.currentProvider)
-    OtocoRegistrar.getContract(network)
-      .methods.ownedDomains(managing.contract)
-      .call(async (error: any, quantity: number) => {
-        if (quantity <= 0) {
-          setLoading(false)
-          return
-        }
-        const domains: ENSDomain[] = []
-        for (let i = 0; i < quantity; i++) {
-          const domain = await OtocoRegistrar.getContract(network)
-            .methods.resolve(managing.contract, i)
-            .call({ from: account })
-          // Remove WRONGLY set of old Domains
-          if (!/^[a-z0-9-]*$/.test(domain)) continue
-          const address = await ens.resolver(`${domain}.otoco.eth`).addr()
-          domains.push({
-            domain: `${domain}.otoco.eth`,
-            address,
-          })
-        }
-        console.log('DOMAINS', domains)
-        dispatch({
-          type: SET_ENS_DOMAINS,
-          payload: { domains: domains },
-        })
+    setTimeout(async () => {
+      if (!network || !managing) return
+      const web3: Web3 = window.web3
+      const ens = new ENS(web3.currentProvider)
+      const seriesQuantity = await OtocoRegistrar.getContract(network)
+        .methods.ownedDomains(managing.contract)
+        .call({ from: account })
+      if (seriesQuantity <= 0) {
         setLoading(false)
+        return
+      }
+      const domains: ENSDomain[] = []
+      for (let i = 0; i < seriesQuantity; i++) {
+        const domain = await OtocoRegistrar.getContract(network)
+          .methods.resolve(managing.contract, i)
+          .call({ from: account })
+        // Remove WRONGLY set of old Domains
+        if (!/^[a-z0-9-]*$/.test(domain)) continue
+        const address = await ens.resolver(`${domain}.otoco.eth`).addr()
+        domains.push({
+          domain: `${domain}.otoco.eth`,
+          address,
+        })
+      }
+      console.log('DOMAINS', domains)
+      dispatch({
+        type: SET_ENS_DOMAINS,
+        payload: { domains: domains },
       })
-  }, [])
+      setLoading(false)
+    }, 0)
+  }, [account, multisigDeployed])
 
   return (
     <div className="card">
