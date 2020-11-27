@@ -39,7 +39,7 @@ const reducer = (
         managing: undefined,
         tokenConfig: undefined,
         tokenDeployed: undefined,
-        ensRegistered: undefined,
+        ensDomains: undefined,
         multisigConfig: undefined,
         multisigDeployed: undefined,
         multisigBalances: undefined,

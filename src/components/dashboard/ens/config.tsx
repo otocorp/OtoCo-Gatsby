@@ -7,10 +7,11 @@ import { connect } from 'react-redux'
 import TransactionMonitor from '../../transactionMonitor/transactionMonitor'
 import AddressWidget from '../../addressWidget/addressWidget'
 import {
-  SET_ENS_CONFIG,
+  SET_ENS_DOMAINS,
   SeriesType,
-  ENSConfig,
   ManagementActionTypes,
+  MultisigDeployed,
+  ENSDomains,
 } from '../../../state/management/types'
 import { IState } from '../../../state/types'
 
@@ -18,7 +19,8 @@ interface Props {
   account?: string | null
   network?: string | null
   managing?: SeriesType
-  ensConfig?: ENSConfig
+  ensDomains?: ENSDomains
+  multisigDeployed?: MultisigDeployed
   dispatch: Dispatch<ManagementActionTypes>
 }
 
@@ -26,7 +28,8 @@ const Config: FC<Props> = ({
   account,
   network,
   managing,
-  ensConfig,
+  ensDomains,
+  multisigDeployed,
   dispatch,
 }: Props) => {
   const [loading, setLoading] = useState(false)
@@ -122,10 +125,14 @@ const Config: FC<Props> = ({
   const registeringFinished = async () => {
     setTransaction(null)
     dispatch({
-      type: SET_ENS_CONFIG,
+      type: SET_ENS_DOMAINS,
       payload: {
-        domain: selectedDomain,
-        name: selectedName,
+        domains: [
+          {
+            domain: `${selectedName}.${selectedDomain}`,
+            address: managing?.contract,
+          },
+        ],
       },
     })
   }
@@ -196,5 +203,6 @@ export default connect((state: IState) => ({
   account: state.account.account,
   network: state.account.network,
   managing: state.management.managing,
-  ensConfig: state.management.ensConfig,
+  ensDomains: state.management.ensDomains,
+  multisigDeployed: state.management.multisigDeployed,
 }))(Config)
