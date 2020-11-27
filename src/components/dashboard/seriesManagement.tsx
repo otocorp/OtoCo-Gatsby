@@ -1,8 +1,8 @@
 import React, { Dispatch, FC, useState } from 'react'
 import Web3 from 'web3'
 import { connect } from 'react-redux'
-import Icon from '../icon/icon'
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
+import Icon from '../icon/icon'
 import Address from '../addressWidget/addressWidget'
 import UTCDate from '../utcDate/utcDate'
 import {
@@ -15,6 +15,7 @@ import { IState } from '../../state/types'
 import SeriesDocuments from './seriesDocuments'
 import SeriesENS from './seriesENS'
 import SeriesToken from './seriesToken'
+import SeriesMultisig from './seriesMultisig'
 
 interface Props {
   account?: string | null
@@ -68,8 +69,9 @@ const SeriesManagement: FC<Props> = ({
           </div>
           <div>
             <SeriesDocuments></SeriesDocuments>
-            <SeriesENS></SeriesENS>
+            <SeriesMultisig></SeriesMultisig>
             <SeriesToken></SeriesToken>
+            <SeriesENS></SeriesENS>
           </div>
         </div>
       )}

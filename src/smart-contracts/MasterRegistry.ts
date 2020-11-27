@@ -1,6 +1,31 @@
 import Web3 from 'web3'
 import { Contract } from 'web3-eth-contract'
-const erc20FactoryABI = [
+const MasterRegistryABI = [
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'series',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'uint16',
+        name: 'key',
+        type: 'uint16',
+      },
+      {
+        indexed: false,
+        internalType: 'string',
+        name: 'value',
+        type: 'string',
+      },
+    ],
+    name: 'ContentChanged',
+    type: 'event',
+  },
   {
     anonymous: false,
     inputs: [
@@ -30,13 +55,19 @@ const erc20FactoryABI = [
         type: 'address',
       },
       {
+        indexed: true,
+        internalType: 'uint16',
+        name: 'key',
+        type: 'uint16',
+      },
+      {
         indexed: false,
         internalType: 'address',
         name: 'value',
         type: 'address',
       },
     ],
-    name: 'TokenCreated',
+    name: 'RecordChanged',
     type: 'event',
   },
   {
@@ -76,11 +107,6 @@ const erc20FactoryABI = [
   {
     inputs: [
       {
-        internalType: 'address',
-        name: 'token',
-        type: 'address',
-      },
-      {
         internalType: 'address[]',
         name: 'previousSeries',
         type: 'address[]',
@@ -100,11 +126,21 @@ const erc20FactoryABI = [
     inputs: [
       {
         internalType: 'address',
-        name: 'newAddress',
+        name: 'series',
+        type: 'address',
+      },
+      {
+        internalType: 'uint16',
+        name: 'key',
+        type: 'uint16',
+      },
+      {
+        internalType: 'address',
+        name: 'value',
         type: 'address',
       },
     ],
-    name: 'updateTokenContract',
+    name: 'setRecord',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -113,11 +149,46 @@ const erc20FactoryABI = [
     inputs: [
       {
         internalType: 'address',
-        name: 'newAddress',
+        name: 'series',
+        type: 'address',
+      },
+      {
+        internalType: 'uint16',
+        name: 'key',
+        type: 'uint16',
+      },
+    ],
+    name: 'getRecord',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
         type: 'address',
       },
     ],
-    name: 'updateRegistryContract',
+    stateMutability: 'view',
+    type: 'function',
+    constant: true,
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'series',
+        type: 'address',
+      },
+      {
+        internalType: 'uint16',
+        name: 'key',
+        type: 'uint16',
+      },
+      {
+        internalType: 'string',
+        name: 'value',
+        type: 'string',
+      },
+    ],
+    name: 'setContent',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -125,27 +196,42 @@ const erc20FactoryABI = [
   {
     inputs: [
       {
-        internalType: 'uint256',
-        name: '_supply',
-        type: 'uint256',
+        internalType: 'address',
+        name: 'series',
+        type: 'address',
       },
       {
-        internalType: 'string',
-        name: '_name',
-        type: 'string',
+        internalType: 'uint16',
+        name: 'key',
+        type: 'uint16',
       },
+    ],
+    name: 'getContent',
+    outputs: [
       {
         internalType: 'string',
-        name: '_symbol',
+        name: '',
         type: 'string',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+    constant: true,
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint16',
+        name: 'pluginID',
+        type: 'uint16',
       },
       {
         internalType: 'address',
-        name: '_series',
+        name: 'pluginAddress',
         type: 'address',
       },
     ],
-    name: 'createERC20',
+    name: 'setPluginController',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -155,10 +241,10 @@ const erc20FactoryABI = [
 export default {
   addresses: {
     private: '0x0826fD5FC8E2dB19b0A1d40e619295F6D65D9c76',
-    ropsten: '0xC144f588C813a7BC74C4EC0c83Fbe111E6F87103',
+    ropsten: '0x7149583ff02E51B2aa5A97525Ca3040A04a6E8a8',
     main: '0xA9fEFffa8026a259109c322e7351F6C5cbf3CBd8',
   },
-  abi: erc20FactoryABI,
+  abi: MasterRegistryABI,
   getContract: function (network = 'ropsten'): Contract {
     const web3: Web3 = window.web3
     return new web3.eth.Contract(this.abi, this.addresses[network]) // web3.eth.contract(this.abi).at(this.addresses[network]);

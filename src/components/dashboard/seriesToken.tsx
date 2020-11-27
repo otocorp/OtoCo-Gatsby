@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import Config from './token/config'
 import Shares from './token/shares'
 import FactoryContract from '../../smart-contracts/TokenFactory'
+import MasterRegistry from '../../smart-contracts/MasterRegistry'
 import TokenContract from '../../smart-contracts/OtocoToken'
 import {
   SET_TOKEN_CONFIG,
@@ -41,17 +42,17 @@ const SeriesToken: FC<Props> = ({
     setTimeout(async () => {
       if (!account || !network || !managing) return
 
-      const token = await FactoryContract.getContract(network)
-        .methods.seriesToken(managing.contract)
+      const contract = await MasterRegistry.getContract(network)
+        .methods.getRecord(managing.contract, 1)
         .call({ from: account })
-      if (token === '0x0000000000000000000000000000000000000000') {
+      if (contract === '0x0000000000000000000000000000000000000000') {
         setLoading(false)
         return
       }
-      const shares = await TokenContract.getContract(token)
+      const shares = await TokenContract.getContract(contract)
         .methods.totalSupply()
         .call({ from: account })
-      const decimals = await TokenContract.getContract(token)
+      const decimals = await TokenContract.getContract(contract)
         .methods.decimals()
         .call({ from: account })
       const sharesBN = new BN(shares)
@@ -59,20 +60,16 @@ const SeriesToken: FC<Props> = ({
       dispatch({
         type: SET_TOKEN_CONFIG,
         payload: {
-          name: await TokenContract.getContract(token)
+          name: await TokenContract.getContract(contract)
             .methods.name()
             .call({ from: account }),
-          symbol: await TokenContract.getContract(token)
+          symbol: await TokenContract.getContract(contract)
             .methods.symbol()
             .call({ from: account }),
           shares: sharesBN.div(getBNDecimals(decimals)).toString(),
           decimals: decimals,
         },
       })
-      // Get deployed Token Contract
-      const contract = await FactoryContract.getContract(network)
-        .methods.seriesToken(managing.contract)
-        .call({ from: account })
       // Get Token creation
       const events = await TokenContract.getContract(
         contract
@@ -89,6 +86,7 @@ const SeriesToken: FC<Props> = ({
       setLoading(false)
     }, 0)
   })
+
   return (
     <div className="card">
       <h6 className="card-header">Token</h6>
@@ -104,7 +102,7 @@ const SeriesToken: FC<Props> = ({
           </div>
         )}
         {!loading && !tokenDeployed && <Config></Config>}
-        {!loading && tokenDeployed !== undefined && <Shares></Shares>}
+        {!loading && tokenDeployed && <Shares></Shares>}
       </div>
     </div>
   )

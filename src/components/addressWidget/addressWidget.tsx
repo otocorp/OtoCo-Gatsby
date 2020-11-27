@@ -31,7 +31,6 @@ const AddressWidget: FC<Props> = ({ address, network }: Props) => {
     if (network === 'kovan')
       setLinkSearch('https://kovan.etherscan.io/address/')
     if (network === 'main') setLinkSearch('https://etherscan.io/address/')
-
     ens
       .reverse(address)
       .name()

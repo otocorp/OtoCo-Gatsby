@@ -560,6 +560,28 @@ const ENSRegistrarAbi = [
   },
 ]
 
+export const SetNameAbi = {
+  constant: false,
+  inputs: [
+    {
+      internalType: 'string',
+      name: 'name',
+      type: 'string',
+    },
+  ],
+  name: 'setName',
+  outputs: [
+    {
+      internalType: 'bytes32',
+      name: '',
+      type: 'bytes32',
+    },
+  ],
+  payable: false,
+  stateMutability: 'nonpayable',
+  type: 'function',
+}
+
 export default {
   addresses: {
     dev: '',

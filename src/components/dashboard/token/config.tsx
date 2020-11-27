@@ -4,6 +4,7 @@ import axios from 'axios'
 import BN from 'bn.js'
 import { connect } from 'react-redux'
 import FactoryContract from '../../../smart-contracts/TokenFactory'
+import MasterRegistry from '../../../smart-contracts/MasterRegistry'
 import TokenContract from '../../../smart-contracts/OtocoToken'
 import TransactionMonitor from '../../transactionMonitor/transactionMonitor'
 import {
@@ -112,8 +113,8 @@ const Config: FC<Props> = ({ account, network, managing, dispatch }: Props) => {
       return
     }
     // Get deployed Token Contract
-    const contract = await FactoryContract.getContract(network)
-      .methods.seriesToken(managing.contract)
+    const contract = await MasterRegistry.getContract(network)
+      .methods.getRecord(managing.contract, 1)
       .call({ from: account })
     // Get Token creation
     const events = await TokenContract.getContract(
