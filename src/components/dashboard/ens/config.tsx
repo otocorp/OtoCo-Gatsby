@@ -111,7 +111,11 @@ const Config: FC<Props> = ({
     console.log(network, requestInfo)
     try {
       OtocoRegistrar.getContract(network)
-        .methods.registerAndStore(selectedName, managing?.contract)
+        .methods.registerAndStore(
+          selectedName,
+          managing?.contract,
+          multisigDeployed?.contract
+        )
         .send(requestInfo, (error, hash: string) => {
           console.log(hash)
           setTransaction(hash)
@@ -130,7 +134,7 @@ const Config: FC<Props> = ({
         domains: [
           {
             domain: `${selectedName}.${selectedDomain}`,
-            address: managing?.contract,
+            address: multisigDeployed?.contract,
           },
         ],
       },

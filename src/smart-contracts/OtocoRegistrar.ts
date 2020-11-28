@@ -2,6 +2,78 @@ import Web3 from 'web3'
 import { Contract } from 'web3-eth-contract'
 const FIFSRegistrarAbi = [
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'series',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'string',
+        name: 'value',
+        type: 'string',
+      },
+    ],
+    name: 'NameClaimed',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'previousOwner',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'newOwner',
+        type: 'address',
+      },
+    ],
+    name: 'OwnershipTransferred',
+    type: 'event',
+  },
+  {
+    inputs: [],
+    name: 'owner',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+    constant: true,
+  },
+  {
+    inputs: [],
+    name: 'renounceOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'newOwner',
+        type: 'address',
+      },
+    ],
+    name: 'transferOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         internalType: 'contract ENS',
@@ -18,34 +90,23 @@ const FIFSRegistrarAbi = [
         name: 'node',
         type: 'bytes32',
       },
+      {
+        internalType: 'address[]',
+        name: 'previousSeries',
+        type: 'address[]',
+      },
+      {
+        internalType: 'bytes32[]',
+        name: 'previousDomains',
+        type: 'bytes32[]',
+      },
     ],
-    payable: false,
+    name: 'initialize',
+    outputs: [],
     stateMutability: 'nonpayable',
-    type: 'constructor',
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'addr',
-        type: 'address',
-      },
-    ],
-    name: 'ownedDomains',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    payable: false,
-    stateMutability: 'view',
     type: 'function',
   },
   {
-    constant: false,
     inputs: [
       {
         internalType: 'bytes32',
@@ -59,18 +120,16 @@ const FIFSRegistrarAbi = [
       },
       {
         internalType: 'address',
-        name: 'target',
+        name: 'addr',
         type: 'address',
       },
     ],
     name: 'register',
     outputs: [],
-    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
-    constant: false,
     inputs: [
       {
         internalType: 'string',
@@ -78,19 +137,22 @@ const FIFSRegistrarAbi = [
         type: 'string',
       },
       {
-        internalType: 'contract Ownable',
+        internalType: 'contract OwnableUpgradeable',
         name: 'target',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'addr',
         type: 'address',
       },
     ],
     name: 'registerAndStore',
     outputs: [],
-    payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
-    constant: true,
     inputs: [
       {
         internalType: 'address',
@@ -111,9 +173,49 @@ const FIFSRegistrarAbi = [
         type: 'string',
       },
     ],
-    payable: false,
     stateMutability: 'view',
     type: 'function',
+    constant: true,
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'addr',
+        type: 'address',
+      },
+    ],
+    name: 'ownedDomains',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+    constant: true,
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: '_bytes32',
+        type: 'bytes32',
+      },
+    ],
+    name: 'bytes32ToString',
+    outputs: [
+      {
+        internalType: 'string',
+        name: '',
+        type: 'string',
+      },
+    ],
+    stateMutability: 'pure',
+    type: 'function',
+    constant: true,
   },
 ]
 
@@ -581,7 +683,7 @@ const PublicResolverAbi = [
 export default {
   addresses: {
     dev: '',
-    ropsten: '0xF006F0F2ecd911195E2F9F2c563d28F2B77551D3',
+    ropsten: '0xbB460dEb628095f88E60B7Cc3979b97A5B52aB8e',
     main: '0xB1845524fA2852BD5459DC3aF4e5E75d5269d826',
   },
   resolvers: {
@@ -600,6 +702,7 @@ export default {
   },
 }
 
+// OTOCO Node: 0xd60cd0a683332ca8ad4a4d342320945cb769f25760b42a21f2d88d3be25cc6aa
 // NODES ARE CREATED USING namehash.hash(domain)
 // LABELS ARE CREATED USING web3.sha3(label)
 // console.log('label hash', web3.utils.sha3(label));

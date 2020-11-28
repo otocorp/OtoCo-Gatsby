@@ -41,20 +41,20 @@ const AddressWidget: FC<Props> = ({ address, network }: Props) => {
       })
       .catch((err: any) => {
         // console.log("ERR", err)
-        OtocoRegistrar.getContract(network)
-          .methods.ownedDomains(address)
-          .call(async (error: any, quantity: number) => {
-            if (quantity <= 0) return
-            OtocoRegistrar.getContract(network)
-              .methods.resolve(address, quantity - 1)
-              .call(async (error: any, name: string) => {
-                // Remove WRONGLY set of old Domains
-                if (!/^[a-z0-9-]*$/.test(name)) return
-                await setDisplayAddress(name + '.otoco.eth')
-                await setENS(true)
-                return
-              })
-          })
+        // OtocoRegistrar.getContract(network)
+        //   .methods.ownedDomains(address)
+        //   .call(async (error: any, quantity: number) => {
+        //     if (quantity <= 0) return
+        //     OtocoRegistrar.getContract(network)
+        //       .methods.resolve(address, quantity - 1)
+        //       .call(async (error: any, name: string) => {
+        //         // Remove WRONGLY set of old Domains
+        //         if (!/^[a-z0-9-]*$/.test(name)) return
+        //         await setDisplayAddress(name + '.otoco.eth')
+        //         await setENS(true)
+        //         return
+        //       })
+        //   })
       })
   }, [address, network])
 
