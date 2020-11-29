@@ -37,6 +37,7 @@ export type TokenOwner = {
 export type ENSDomain = {
   domain: string
   address: string
+  reverse?: string
 }
 
 export type ENSDomains = {

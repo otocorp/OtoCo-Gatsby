@@ -1,6 +1,7 @@
 import React, { FC, useState } from 'react'
 import axios from 'axios'
 import Web3 from 'web3'
+import { AbiItem } from 'web3-utils'
 import BN from 'bn.js'
 import { connect } from 'react-redux'
 import GnosisSafe from '../../smart-contracts/GnosisSafe'
@@ -23,6 +24,10 @@ interface Props {
   network?: string
   managing?: SeriesType
   multisigDeployed?: MultisigDeployed
+  recipient: string
+  abi: AbiItem
+  params: string[]
+  gas: string
 }
 
 interface CreateTransactionArgs {
@@ -43,6 +48,10 @@ const MultisigWidget: FC<Props> = ({
   network,
   managing,
   multisigDeployed,
+  recipient,
+  abi,
+  params,
+  gas,
 }: Props) => {
   const [transaction, setTransaction] = useState<undefined | string>(undefined)
 
@@ -78,21 +87,20 @@ const MultisigWidget: FC<Props> = ({
       .call({ from: account })
     console.log('NONCE', nonce)
     // Encode function call
-    const setNameParameters = web3.eth.abi.encodeFunctionCall(
-      SetNameAbi, // Abi for Initialize wallet with Owners config
-      ['ohgod.filipesoccol.eth']
+    const encodedParameters = web3.eth.abi.encodeFunctionCall(
+      abi, // Abi for Initialize wallet with Owners config
+      params
     )
-    console.log('Encoded Function Call', setNameParameters)
+    console.log('Encoded Function Call', encodedParameters)
     // Estimate Safe TX gas
     const safeGas = await estimateSafeTxGas(
       multisigDeployed.contract,
-      setNameParameters,
-      '0x6F628b68b30Dc3c17f345c9dbBb1E483c2b7aE5c',
+      encodedParameters,
+      recipient,
       '0',
-      0
+      0 // CALL
     )
     console.log('SAFE GAS', safeGas)
-    // Get transaction HASH
     // https://docs.gnosis.io/safe/docs/docs5/#pre-validated-signatures
     const sigs = `0x000000000000000000000000${account.replace(
       '0x',
@@ -100,27 +108,28 @@ const MultisigWidget: FC<Props> = ({
     )}000000000000000000000000000000000000000000000000000000000000000001`
     const txArgs = {
       safeInstance: GnosisSafe.getContract(multisigDeployed.contract),
-      to: '0x6F628b68b30Dc3c17f345c9dbBb1E483c2b7aE5c',
+      to: recipient,
       valueInWei: '0',
-      data: setNameParameters,
+      data: encodedParameters,
       operation: 0,
       nonce,
       safeTxGas: safeGas,
-      baseGas: 1000000,
-      gasPrice,
+      baseGas: gas,
+      gasPrice: 0,
       gasToken: ZERO_ADDRESS,
       refundReceiver: ZERO_ADDRESS,
       sender: account,
       sigs,
     }
-    const transactionHash = await getTransactionHash(txArgs)
-    console.log('TRANSACTION HASH', transactionHash)
-    const signature = await tryOffchainSigning(
-      transactionHash,
-      { ...txArgs, safeAddress: multisigDeployed.contract },
-      false
-    )
-    console.log('SIGNATURE:', signature)
+    // Get transaction HASH
+    // const transactionHash = await getTransactionHash(txArgs)
+    // console.log('TRANSACTION HASH', transactionHash)
+    // const signature = await tryOffchainSigning(
+    //   transactionHash,
+    //   { ...txArgs, safeAddress: multisigDeployed.contract },
+    //   false
+    // )
+    // console.log('SIGNATURE:', signature)
     try {
       const transaction = await GnosisSafe.getContract(
         multisigDeployed.contract

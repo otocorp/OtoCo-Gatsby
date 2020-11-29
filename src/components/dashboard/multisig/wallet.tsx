@@ -15,7 +15,6 @@ import {
   MultisigDeployed,
 } from '../../../state/management/types'
 import { IState } from '../../../state/types'
-import MultisigWidget from '../../multisigWidget/multisigWidget'
 
 type TokenListTransaction = {
   status: number
@@ -189,7 +188,6 @@ const Wallet: FC<Props> = ({
       <button className="btn btn-primary" onClick={clickManageHandler}>
         Manage Wallet
       </button>
-      {/* <MultisigWidget></MultisigWidget> */}
     </div>
   )
 }

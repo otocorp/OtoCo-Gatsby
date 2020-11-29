@@ -680,6 +680,88 @@ const PublicResolverAbi = [
   },
 ]
 
+const ReverseRegistrarAbi = [
+  {
+    inputs: [
+      { internalType: 'contract ENS', name: 'ensAddr', type: 'address' },
+      {
+        internalType: 'contract Resolver',
+        name: 'resolverAddr',
+        type: 'address',
+      },
+    ],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'ADDR_REVERSE_NODE',
+    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: false,
+    inputs: [{ internalType: 'address', name: 'owner', type: 'address' }],
+    name: 'claim',
+    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    constant: false,
+    inputs: [
+      { internalType: 'address', name: 'owner', type: 'address' },
+      { internalType: 'address', name: 'resolver', type: 'address' },
+    ],
+    name: 'claimWithResolver',
+    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'defaultResolver',
+    outputs: [{ internalType: 'contract Resolver', name: '', type: 'address' }],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'ens',
+    outputs: [{ internalType: 'contract ENS', name: '', type: 'address' }],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [{ internalType: 'address', name: 'addr', type: 'address' }],
+    name: 'node',
+    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    payable: false,
+    stateMutability: 'pure',
+    type: 'function',
+  },
+  {
+    constant: false, // 7
+    inputs: [{ internalType: 'string', name: 'name', type: 'string' }],
+    name: 'setName',
+    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+]
+
 export default {
   addresses: {
     dev: '',
@@ -688,10 +770,15 @@ export default {
   },
   resolvers: {
     ropsten: '0x42D63ae25990889E35F215bC95884039Ba354115',
-    main: '0x0904Dac3347eA47d208F3Fd67402D039a3b99859',
+    main: '0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41',
+  },
+  reverseRegistrars: {
+    ropsten: '0x6F628b68b30Dc3c17f345c9dbBb1E483c2b7aE5c',
+    main: '0x084b1c3C81545d370f3634392De611CaaBFf8148',
   },
   abi: FIFSRegistrarAbi,
   resolverAbi: PublicResolverAbi,
+  reverseAbi: ReverseRegistrarAbi,
   getContract: function (address: string): Contract {
     const web3: Web3 = window.web3
     return new web3.eth.Contract(this.abi, this.addresses[address])
@@ -711,9 +798,7 @@ export default {
 // ROPSTEN ENS = 0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e
 // ROPSTEN RESOLVER = 0x42D63ae25990889E35F215bC95884039Ba354115
 // ROPSTEN REVERSE REGISTRAR = 0x6F628b68b30Dc3c17f345c9dbBb1E483c2b7aE5c
-// ROPSTEN REVERSE RESOLVER = 0x084b1c3c81545d370f3634392de611caabff8148
 
 // MAIN ENS = 0x00000000000c2e074ec69a0dfb2997ba6c7d2e1e
-// MAIN RESOLVER = 0x0904Dac3347eA47d208F3Fd67402D039a3b99859
-// MAIN REVERSE REGISTRAR = 0x6F628b68b30Dc3c17f345c9dbBb1E483c2b7aE5c
-// MAIN REVERSE RESOLVER = 0x084b1c3c81545d370f3634392de611caabff8148
+// MAIN RESOLVER = 0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41
+// MAIN REVERSE REGISTRAR = 0x084b1c3C81545d370f3634392De611CaaBFf8148

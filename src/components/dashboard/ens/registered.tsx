@@ -14,7 +14,7 @@ import {
   ENSDomain,
   MultisigDeployed,
 } from '../../../state/management/types'
-import AddressWidget from '../../addressWidget/addressWidget'
+import { sendMultisigTransaction } from '../../../services/safe/safeTxSender'
 import { IState } from '../../../state/types'
 
 interface Props {
@@ -29,19 +29,21 @@ interface Props {
 type ENSDomainsLabeled = {
   domain: string
   address: string
+  reverse?: string
   label?: string
 }
 
 interface DomainProps {
   handleTransfer: (domain: string) => void
+  handleSetReverse: (domain: string) => void
   domains: ENSDomainsLabeled[]
 }
 
-const ListDomains = ({ domains, handleTransfer }: DomainProps) => {
-  const clickManageHandler = async (domain) => {
-    window.open(`https://app.ens.domains/name/${domain}`, '_blank')
-  }
-
+const ListDomains = ({
+  domains,
+  handleTransfer,
+  handleSetReverse,
+}: DomainProps) => {
   return domains.map((d, idx) => (
     <tr key={idx}>
       <td>
@@ -66,10 +68,18 @@ const ListDomains = ({ domains, handleTransfer }: DomainProps) => {
       <td>
         {d.label === 'series' && (
           <button
-            className="btn small btn-primary btn-outline btn-sm"
+            className="btn btn-primary btn-sm"
             onClick={handleTransfer.bind(undefined, d.domain)}
           >
             transfer to multisig
+          </button>
+        )}
+        {d.label === 'multisig-no-rev' && (
+          <button
+            className="btn btn-primary btn-sm"
+            onClick={handleSetReverse.bind(undefined, d.domain)}
+          >
+            set reverse lookup
           </button>
         )}
       </td>
@@ -89,6 +99,7 @@ const Registered: FC<Props> = ({
   const domainsList = ensDomains?.domains.map((d: ENSDomainsLabeled) => {
     if (multisigDeployed && multisigDeployed.contract == d.address)
       d.label = 'multisig'
+    if (d.label == 'multisig' && !d.reverse) d.label += '-no-rev'
     if (managing && managing.contract == d.address) d.label = 'series'
     return d
   })
@@ -111,9 +122,16 @@ const Registered: FC<Props> = ({
           // Remove WRONGLY set of old Domains
           if (!/^[a-z0-9-]*$/.test(domain)) continue
           const address = await ens.resolver(`${domain}.otoco.eth`).addr()
+          let reverse
+          try {
+            reverse = await ens.reverse(address).name()
+          } catch (err) {
+            console.log('No reverse set for', address)
+          }
           domains.push({
             domain: `${domain}.otoco.eth`,
             address,
+            reverse,
           })
         }
         dispatch({
@@ -148,6 +166,21 @@ const Registered: FC<Props> = ({
     }
   }
 
+  const handleClickSetReverse = async (domain: string) => {
+    if (!account) return
+    if (!multisigDeployed) return
+    setTransaction(
+      await sendMultisigTransaction(
+        account,
+        multisigDeployed.contract,
+        OtocoRegistrar.reverseRegistrars[network],
+        OtocoRegistrar.reverseAbi[7],
+        [domain],
+        '300000'
+      )
+    )
+  }
+
   return (
     // <div className="small">
     //   You successfully claimed <AddressWidget address={managing?.contract} /> as
@@ -155,26 +188,24 @@ const Registered: FC<Props> = ({
     // </div>
     <div>
       <div className="small pb-2">You sucessfully claimed a domain.</div>
-      <table className="table small">
-        <thead>
-          <tr>
-            <th scope="col">Domain</th>
-            <th scope="col">Address To</th>
-            <th scope="col">Operations</th>
-          </tr>
-        </thead>
-        <tbody>
-          <ListDomains
-            domains={domainsList}
-            handleTransfer={handleClickTransfer}
-          ></ListDomains>
-        </tbody>
-      </table>
-      <div className="small">
-        If your domain is addressing your series contract, it is possible to
-        transfer to your multisig address, using <b>transfer to multisig</b>{' '}
-        above.
-      </div>
+      {!transaction && (
+        <table className="table small">
+          <thead>
+            <tr>
+              <th scope="col">Domain</th>
+              <th scope="col">Address To</th>
+              <th scope="col">Operations</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ListDomains
+              domains={domainsList}
+              handleTransfer={handleClickTransfer}
+              handleSetReverse={handleClickSetReverse}
+            ></ListDomains>
+          </tbody>
+        </table>
+      )}
       {transaction && (
         <TransactionMonitor
           hash={transaction}
@@ -182,6 +213,11 @@ const Registered: FC<Props> = ({
           callbackSuccess={updateDomains}
         ></TransactionMonitor>
       )}
+      <div className="small">
+        If your domain is addressing your series contract, it is possible to
+        transfer to your multisig address, using <b>transfer to multisig</b>{' '}
+        above.
+      </div>
     </div>
   )
 }

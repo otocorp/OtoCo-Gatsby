@@ -55,9 +55,16 @@ const SeriesENS: FC<Props> = ({
         // Remove WRONGLY set of old Domains
         if (!/^[a-z0-9-]*$/.test(domain)) continue
         const address = await ens.resolver(`${domain}.otoco.eth`).addr()
+        let reverse
+        try {
+          reverse = await ens.reverse(address).name()
+        } catch (err) {
+          console.log('No reverse set for', address)
+        }
         domains.push({
           domain: `${domain}.otoco.eth`,
           address,
+          reverse,
         })
       }
       console.log('DOMAINS', domains)
