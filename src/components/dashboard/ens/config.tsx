@@ -144,7 +144,7 @@ const Config: FC<Props> = ({
   return (
     <div>
       <div className="small pb-2">
-        Link your company address{' '}
+        Link your multisig wallet address{' '}
         <AddressWidget address={managing?.contract}></AddressWidget> to an
         otoco.eth to make it easy to use. Simply check availability and claim
         your domain for free.
