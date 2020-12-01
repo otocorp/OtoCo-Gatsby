@@ -242,7 +242,7 @@ export default {
   addresses: {
     private: '0x0826fD5FC8E2dB19b0A1d40e619295F6D65D9c76',
     ropsten: '0x7149583ff02E51B2aa5A97525Ca3040A04a6E8a8',
-    main: '0xA9fEFffa8026a259109c322e7351F6C5cbf3CBd8',
+    // main: '0xA9fEFffa8026a259109c322e7351F6C5cbf3CBd8',
   },
   abi: MasterRegistryABI,
   getContract: function (network = 'ropsten'): Contract {

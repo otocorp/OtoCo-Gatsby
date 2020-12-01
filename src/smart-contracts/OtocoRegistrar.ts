@@ -766,7 +766,7 @@ export default {
   addresses: {
     dev: '',
     ropsten: '0xbB460dEb628095f88E60B7Cc3979b97A5B52aB8e',
-    main: '0xB1845524fA2852BD5459DC3aF4e5E75d5269d826',
+    // main: '0xB1845524fA2852BD5459DC3aF4e5E75d5269d826',
   },
   resolvers: {
     ropsten: '0x42D63ae25990889E35F215bC95884039Ba354115',
