@@ -156,7 +156,7 @@ export default {
   addresses: {
     private: '0x0826fD5FC8E2dB19b0A1d40e619295F6D65D9c76',
     ropsten: '0xC144f588C813a7BC74C4EC0c83Fbe111E6F87103',
-    // main: '0xA9fEFffa8026a259109c322e7351F6C5cbf3CBd8',
+    main: '0x0d3BC598F0F75590CD75D60D40e0510F515EBE51',
   },
   abi: erc20FactoryABI,
   getContract: function (network = 'ropsten'): Contract {
