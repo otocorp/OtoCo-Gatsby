@@ -40,7 +40,9 @@ const CheckName: FC<Props> = ({
       .get(
         `https://api.opencorporates.com/v0.4.8/companies/search?q=${encodeURIComponent(
           companyName + ' LLC'
-        )}&jurisdiction_code=${jurisdictionSelected}`
+        )}&jurisdiction_code=${jurisdictionSelected}&api_token=${
+          process.env.GATSBY_OPENCORPORATES_KEY
+        }`
       )
       .then(function ({ data }) {
         if (data.results.total_count === 0) {
