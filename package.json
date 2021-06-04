@@ -4,7 +4,7 @@
   "version": "3.0.0",
   "author": "Filipe Soccol <filipe.soccol@gmail.com>",
   "dependencies": {
-    "@hapi/address": "^2.1.4",
+    "@hapi/address": "^4.0.1",
     "@hapi/formula": "^3.0.0",
     "@hapi/pinpoint": "^2.0.0",
     "@loadable/component": "^5.14.1",
