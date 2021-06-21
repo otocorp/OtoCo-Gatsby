@@ -93,6 +93,7 @@ const StakeDisplay: FC<Props> = ({
           <TimerCard
             startDate={infos.startTimestamp}
             endDate={infos.endTimestamp}
+            stage={infos.stage}
             setTitleText={setTitleText}
           />
         </div>
