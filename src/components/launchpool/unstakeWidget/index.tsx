@@ -50,7 +50,6 @@ const UnstakeWidget: FC<Props> = ({
             else resolve(hash)
           })
       })
-      console.log(hash)
       setHash(hash)
     } catch (err) {
       console.error('Unstaking error', err)
@@ -69,7 +68,6 @@ const UnstakeWidget: FC<Props> = ({
   }
 
   React.useEffect(() => {
-    console.log('SHOW ==>> ', opened)
     if (opened) {
       setTimeout(() => {
         setCountdown(true)

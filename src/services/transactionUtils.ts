@@ -23,7 +23,7 @@ export default {
         )
         resolve(requestInfo)
       } catch (err) {
-        console.log('Could not fetch gas fee for transaction.')
+        console.error('Could not fetch gas fee for transaction.')
         resolve({ from, gas, gasPrice: '0' })
       }
     })

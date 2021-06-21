@@ -38,7 +38,6 @@ const Broadcast: FC<Props> = ({ privatekey }: Props) => {
   }
   const handleChangeTarget = (val: BroadcastFilter) => {
     setFilter(val)
-    console.log(val)
   }
 
   const handleChangeAddress = (event) => {
@@ -50,7 +49,6 @@ const Broadcast: FC<Props> = ({ privatekey }: Props) => {
   const handleBroadcastMessage = async (val) => {
     if (!privatekey) return
     if (!process.env.GATSBY_ORACLE_KEY) return
-    console.log('BROADCAST', title, link, description, filter)
 
     const message: BroadcastMessage = {
       title,

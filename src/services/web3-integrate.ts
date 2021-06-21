@@ -47,7 +47,6 @@ const Modal: ModalType = {
     }
 
     this.provider = await this.web3Modal.connect()
-    console.log(this.provider)
     this.web3 = new Web3(this.provider)
     window.web3 = this.web3
 

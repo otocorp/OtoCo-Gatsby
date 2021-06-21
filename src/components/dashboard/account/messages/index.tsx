@@ -39,14 +39,12 @@ const SeriesIdentity: FC<Props> = ({
         type: SET_OUTBOX_MESSAGES,
         payload: await Textile.listOutboxMessages(),
       })
-      // console.log(inboxMessages)
     }, 0)
   }, [privatekey])
 
   const handleDelete = async (id: string) => {
     if (!privatekey) return
     await Textile.deleteMessage(id)
-    console.log('DELETED', id)
   }
 
   const handleDownload = async (obj: any) => {

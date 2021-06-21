@@ -95,7 +95,6 @@ const Config: FC<Props> = ({
     }
     if (!network) return
     if (!account) return
-    console.log('WILL SEND', owners, threshold)
     dispatch({
       type: SET_MULTISIG_CONFIG,
       payload: {
@@ -124,11 +123,10 @@ const Config: FC<Props> = ({
       MultisigFactory.getContract(network)
         .methods.createMultisig(managing.contract, setupParametersEncoded)
         .send(requestInfo, (error, hash: string) => {
-          console.log(hash)
           setTransaction(hash)
         })
     } catch (err) {
-      console.log(err)
+      console.error(err)
     }
   }
 

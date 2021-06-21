@@ -75,7 +75,7 @@ const NoBalanceForm: FC<Props> = ({
         window.open(response.data.url, '_blank')
       })
       .catch((err: AxiosError) => {
-        console.log(err)
+        console.error(err)
       })
   }
 

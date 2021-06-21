@@ -38,7 +38,6 @@ const Billing: FC<Props> = ({ network, privatekey }: Props) => {
   const handleBroadcastMessage = async (val) => {
     if (!privatekey) return
     if (!process.env.GATSBY_ORACLE_KEY) return
-    console.log('BILLING', product, entity, environment, amount)
 
     const message: BillingMessage = {
       product,

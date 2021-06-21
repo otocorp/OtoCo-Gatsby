@@ -56,7 +56,7 @@ const EnoughBalanceForm: FC<Props> = ({
           setTransaction(hash)
         })
     } catch (err) {
-      console.log(err)
+      console.error(err)
     }
   }
 
