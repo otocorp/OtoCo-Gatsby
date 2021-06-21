@@ -62,28 +62,37 @@ const StakeWidget: FC<Props> = ({
       const selectedAmount = new BN(Web3.utils.toWei(event.target.value.trim()))
       if (normalizeAmount(balance, selectedToken.decimals).lt(selectedAmount)) {
         setError(
-          'Not enough balance to approve ' +
-            event.target.value +
-            ' ' +
-            selectedToken?.symbol
+          `Not enough balance to approve ${accounting.formatMoney(
+            event.target.value,
+            {
+              symbol: '',
+              precision: 0,
+            }
+          )} ${selectedToken?.symbol}`
         )
         return
       }
       if (infos.stakeAmountMin.gt(selectedAmount)) {
         setError(
-          'Stake should be bigger than ' +
-            Web3.utils.fromWei(infos.stakeAmountMin) +
-            ' ' +
-            selectedToken?.symbol
+          `Stake should be bigger than ${accounting.formatMoney(
+            Web3.utils.fromWei(infos.stakeAmountMin),
+            {
+              symbol: '',
+              precision: 0,
+            }
+          )} ${selectedToken?.symbol}`
         )
         return
       }
       if (infos.stakeAmountMax.lt(selectedAmount)) {
         setError(
-          'Stake should be smaller than ' +
-            Web3.utils.fromWei(infos.stakeAmountMax) +
-            ' ' +
-            selectedToken?.symbol
+          `Stake should be smaller than ${accounting.formatMoney(
+            Web3.utils.fromWei(infos.stakeAmountMax),
+            {
+              symbol: '',
+              precision: 0,
+            }
+          )} ${selectedToken?.symbol}`
         )
         return
       }
