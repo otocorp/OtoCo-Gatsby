@@ -115,7 +115,7 @@ const calculateMinimumGasForTransaction = async (
       })
       return txGasEstimation + additionalGas
     } catch (error) {
-      console.log(
+      console.error(
         `Error trying to estimate gas with amount: ${amountOfGasToTryTx}`
       )
     }

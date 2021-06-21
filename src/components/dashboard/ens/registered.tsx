@@ -126,7 +126,7 @@ const Registered: FC<Props> = ({
           try {
             reverse = await ens.reverse(address).name()
           } catch (err) {
-            console.log('No reverse set for', address)
+            console.error('No reverse set for', address)
           }
           domains.push({
             domain: `${domain}.otoco.eth`,
@@ -154,7 +154,7 @@ const Registered: FC<Props> = ({
           setTransaction(hash)
         })
     } catch (err) {
-      console.log(err)
+      console.error(err)
     }
   }
 

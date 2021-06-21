@@ -74,13 +74,6 @@ const StepPayment: FC<Props> = ({
       const allBN = new BN(allowance)
       const feeBN = new BN(erc20.spinUpFee)
 
-      console.log(
-        allBN.div(divisor).toString(),
-        balBN.div(divisor).toString(),
-        erc20.spinUpFee,
-        allBN.div(divisor).gte(feeBN)
-      )
-
       setAllowance(allBN.div(divisor).toString())
       setBalance(balBN.div(divisor).toString())
       setFeeBN(feeBN)
@@ -125,9 +118,7 @@ const StepPayment: FC<Props> = ({
     const divisor = new BN(10).pow(decimalBN)
     const balanceBN = new BN(balance)
 
-    console.log(balanceBN)
     setBalance(balanceBN.div(divisor).toString())
-    console.log(allowanceBN.gte(feeBN), balanceBN.gte(feeBN))
   }
 
   const nextStepHandler = () => {

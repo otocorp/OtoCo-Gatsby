@@ -141,12 +141,10 @@ const Token: FC<Props> = ({
       .resolver(event.target.value)
       .addr()
       .then((addr: string) => {
-        console.log(addr)
         setENSAddress(addr)
       })
       .catch(() => {
         setENSAddress(null)
-        // console.log("ERR", err)
       })
     setTo(event.target.value)
   }

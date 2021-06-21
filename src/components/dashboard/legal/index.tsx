@@ -53,7 +53,6 @@ const SeriesDocuments: FC<Props> = ({ managing, dispatch }: Props) => {
 
   const exportPDF = async () => {
     if (!managing) return
-    console.log(managing)
     const prefix = managing.jurisdiction.substring(0, 2).toLowerCase()
     const existingPdfBytes = await fetch(pdfs[prefix].agreement).then((res) =>
       res.arrayBuffer()
@@ -70,7 +69,7 @@ const SeriesDocuments: FC<Props> = ({ managing, dispatch }: Props) => {
     try {
       form.getTextField('Address').setText(managing.contract)
     } catch (err) {
-      console.log('Wyoming has no address field')
+      console.error('Wyoming has no address field')
     }
     form
       .getTextField('Date')

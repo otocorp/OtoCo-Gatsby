@@ -58,7 +58,7 @@ const SeriesOverview: FC<Props> = ({
           payload: await Textile.listOutboxMessages(),
         })
       } catch (err) {
-        console.log(err)
+        console.error(err)
         setError('An error ocurred acessing payment service.')
       }
     }, 0)

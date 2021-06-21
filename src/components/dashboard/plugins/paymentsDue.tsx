@@ -31,8 +31,6 @@ export const PaymentsDue = ({
     })
     .filter((m) => m.entity === contract)
 
-  //   console.log(tempMessages)
-
   return tempMessages.map((m) => (
     <tr className="small" key={m.billId}>
       <td>

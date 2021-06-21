@@ -54,7 +54,6 @@ const PaymentWidget: FC<Props> = ({
   const [error, setError] = useState<string>('')
 
   React.useEffect(() => {
-    console.log('SHOW ==>> ', show, status)
     if (show) {
       setStatus(StatusType.OPENED)
       setTimeout(() => {
@@ -84,7 +83,7 @@ const PaymentWidget: FC<Props> = ({
     } catch (err) {
       setStatus(StatusType.OPENED)
       setError('Payment failed or cancelled.')
-      console.log('PAYMENT CANCELLED', err)
+      console.error('PAYMENT CANCELLED', err)
     }
   }
   const handleDAIPayment = async () => {
@@ -109,7 +108,6 @@ const PaymentWidget: FC<Props> = ({
       })
 
       // if (!r.status) throw 'Transaction Errored'
-      // console.log('receipt', r)
       const receipt: PaymentProps = {
         receipt: hash,
         method: 'DAI',
@@ -122,7 +120,7 @@ const PaymentWidget: FC<Props> = ({
     } catch (err) {
       setStatus(StatusType.OPENED)
       setError('Payment failed or cancelled.')
-      console.log('PAYMENT CANCELLED', err)
+      console.error('PAYMENT CANCELLED', err)
     }
   }
   const handleUSDTPayment = async () => {
@@ -146,7 +144,6 @@ const PaymentWidget: FC<Props> = ({
           })
       })
       // if (!r.status) throw 'Transaction Errored'
-      // console.log('receipt', r)
       const receipt: PaymentProps = {
         receipt: hash,
         method: 'USDT',
@@ -181,7 +178,6 @@ const PaymentWidget: FC<Props> = ({
     if (!process.env.GATSBY_ORACLE_KEY)
       throw 'Error sending payment. No Oracle public key set.'
     if (!managing) throw 'Error sending payment. No receipt/company found.'
-    console.log('PAYMENT', receipt)
     const message: PaymentMessage = {
       _id: receipt.receipt,
       method: receipt.method,
@@ -199,7 +195,6 @@ const PaymentWidget: FC<Props> = ({
       message,
     })
     await Textile.readMessage(messageId)
-    console.log('PAYMENT MESSAGE SENT')
   }
 
   return (

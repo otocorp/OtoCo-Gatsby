@@ -792,8 +792,6 @@ export default {
 // OTOCO Node: 0xd60cd0a683332ca8ad4a4d342320945cb769f25760b42a21f2d88d3be25cc6aa
 // NODES ARE CREATED USING namehash.hash(domain)
 // LABELS ARE CREATED USING web3.sha3(label)
-// console.log('label hash', web3.utils.sha3(label));
-// console.log('namehash', namehash.hash(domain));
 
 // ROPSTEN ENS = 0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e
 // ROPSTEN RESOLVER = 0x42D63ae25990889E35F215bC95884039Ba354115

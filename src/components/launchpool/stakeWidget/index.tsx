@@ -137,11 +137,10 @@ const StakeWidget: FC<Props> = ({
             else resolve(hash)
           })
       })
-      console.log(hash)
       setHash(hash)
       setCloseAfterConfirm(false)
     } catch (err) {
-      console.log(err)
+      console.error(err)
       setError('Error Approving: ' + err.message)
     }
   }
@@ -153,7 +152,6 @@ const StakeWidget: FC<Props> = ({
       account,
       '250000'
     )
-    // console.log('STAKE INFO', selectedToken?.address, approved.toString())
     try {
       const hash: string = await new Promise((resolve, reject) => {
         LaunchPoolContract.getContract(poolId)
@@ -163,7 +161,6 @@ const StakeWidget: FC<Props> = ({
             else resolve(hash)
           })
       })
-      // console.log(hash)
       setHash(hash)
       setCloseAfterConfirm(true)
     } catch (err) {
@@ -185,7 +182,6 @@ const StakeWidget: FC<Props> = ({
   }
 
   React.useEffect(() => {
-    console.log('SHOW ==>> ', opened)
     if (opened) {
       setTimeout(() => {
         setCountdown(true)
