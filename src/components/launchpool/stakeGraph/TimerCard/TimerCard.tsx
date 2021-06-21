@@ -82,7 +82,7 @@ const TimerCard: FC<Props> = ({
         setTimeDisplay('Distributing stakes.')
         break
       case 5:
-        setTimeDisplay('Stakes finalized.')
+        setTimeDisplay('Pre-order over.')
         break
       default:
         if (!timeLeft.isOver) {
