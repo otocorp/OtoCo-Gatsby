@@ -20,6 +20,11 @@
   padding: 20px;
   width: 60%; /* Could be more or less, depending on screen size */
   border-radius: 12px;
+
+  .alert-stake {
+    background-color: #31188f;
+    color: white;
+  }
 }
 
 @media (max-width: 640px) {

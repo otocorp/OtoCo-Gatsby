@@ -291,19 +291,40 @@ const StakeWidget: FC<Props> = ({
               {!transaction && (
                 <div>
                   {approved.gt(new BN(0)) && (
-                    <div className="row p-3">
-                      <button className="btn btn-primary" onClick={handleStake}>
-                        Stake{' '}
-                        {accounting.formatMoney(
-                          displayAmountConverter(
-                            approved,
-                            selectedToken?.decimals
-                          ),
-                          ''
-                        )}{' '}
-                        {selectedToken?.symbol}
-                      </button>
-                    </div>
+                    <>
+                      <div className="alert alert-stake mt-3">
+                        <div className="row p-3 fw-bold">{`Before you stake:`}</div>
+                        <div className="row px-3 pb-3">
+                          {`Be sure to check the transaction is a "stake" transaction in your wallet after clicking below!`}
+                        </div>
+                        <div className="flex-row px-1 pb-3">
+                          {`Please also check the transaction's contract is *TBD* (${poolId})`}
+                          <a
+                            href={`https://etherscan.io/search?f=0&q=${poolId}`}
+                            rel="noopener noreferrer"
+                            target="_blank"
+                          >
+                            {' here.'}
+                          </a>
+                        </div>
+                      </div>
+                      <div className="row p-3">
+                        <button
+                          className="btn btn-primary"
+                          onClick={handleStake}
+                        >
+                          Stake{' '}
+                          {accounting.formatMoney(
+                            displayAmountConverter(
+                              approved,
+                              selectedToken?.decimals
+                            ),
+                            ''
+                          )}{' '}
+                          {selectedToken?.symbol}
+                        </button>
+                      </div>
+                    </>
                   )}
                 </div>
               )}
