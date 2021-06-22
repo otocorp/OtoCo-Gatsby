@@ -62,28 +62,37 @@ const StakeWidget: FC<Props> = ({
       const selectedAmount = new BN(Web3.utils.toWei(event.target.value.trim()))
       if (normalizeAmount(balance, selectedToken.decimals).lt(selectedAmount)) {
         setError(
-          'Not enough balance to approve ' +
-            event.target.value +
-            ' ' +
-            selectedToken?.symbol
+          `Not enough balance to approve ${accounting.formatMoney(
+            event.target.value,
+            {
+              symbol: '',
+              precision: 0,
+            }
+          )} ${selectedToken?.symbol}`
         )
         return
       }
       if (infos.stakeAmountMin.gt(selectedAmount)) {
         setError(
-          'Stake should be bigger than ' +
-            Web3.utils.fromWei(infos.stakeAmountMin) +
-            ' ' +
-            selectedToken?.symbol
+          `Stake should be bigger than ${accounting.formatMoney(
+            Web3.utils.fromWei(infos.stakeAmountMin),
+            {
+              symbol: '',
+              precision: 0,
+            }
+          )} ${selectedToken?.symbol}`
         )
         return
       }
       if (infos.stakeAmountMax.lt(selectedAmount)) {
         setError(
-          'Stake should be smaller than ' +
-            Web3.utils.fromWei(infos.stakeAmountMax) +
-            ' ' +
-            selectedToken?.symbol
+          `Stake should be smaller than ${accounting.formatMoney(
+            Web3.utils.fromWei(infos.stakeAmountMax),
+            {
+              symbol: '',
+              precision: 0,
+            }
+          )} ${selectedToken?.symbol}`
         )
         return
       }
@@ -278,19 +287,40 @@ const StakeWidget: FC<Props> = ({
               {!transaction && (
                 <div>
                   {approved.gt(new BN(0)) && (
-                    <div className="row p-3">
-                      <button className="btn btn-primary" onClick={handleStake}>
-                        Stake{' '}
-                        {accounting.formatMoney(
-                          displayAmountConverter(
-                            approved,
-                            selectedToken?.decimals
-                          ),
-                          ''
-                        )}{' '}
-                        {selectedToken?.symbol}
-                      </button>
-                    </div>
+                    <>
+                      <div className="alert alert-stake mt-3">
+                        <div className="row p-3 fw-bold">{`Before you stake:`}</div>
+                        <div className="row px-3 pb-3">
+                          {`Be sure to check the transaction is a "stake" transaction in your wallet after clicking below!`}
+                        </div>
+                        <div className="flex-row px-1 pb-3">
+                          {`Please also check the transaction's contract is *TBD* (${poolId})`}
+                          <a
+                            href={`https://etherscan.io/search?f=0&q=${poolId}`}
+                            rel="noopener noreferrer"
+                            target="_blank"
+                          >
+                            {' here.'}
+                          </a>
+                        </div>
+                      </div>
+                      <div className="row p-3">
+                        <button
+                          className="btn btn-primary"
+                          onClick={handleStake}
+                        >
+                          Stake{' '}
+                          {accounting.formatMoney(
+                            displayAmountConverter(
+                              approved,
+                              selectedToken?.decimals
+                            ),
+                            ''
+                          )}{' '}
+                          {selectedToken?.symbol}
+                        </button>
+                      </div>
+                    </>
                   )}
                 </div>
               )}
