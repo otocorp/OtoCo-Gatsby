@@ -22,22 +22,22 @@ const InfoCard = ({
 }: Props) => (
   <div className={`info-card ${classProp}`}>
     <div className={'text-wrapper'}>
-      {infoLink && (
-        <a
-          className={'info-link'}
-          href={infoLink}
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          <QuestionCircle />
-        </a>
-      )}
       <span
         className={
           useGraidentText ? 'graident-text info-card-title' : 'info-card-title'
         }
       >
         {titleText}
+        {infoLink && (
+          <a
+            className={'info-link'}
+            href={infoLink}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <QuestionCircle />
+          </a>
+        )}
       </span>
       <p>{infoText}</p>
     </div>
