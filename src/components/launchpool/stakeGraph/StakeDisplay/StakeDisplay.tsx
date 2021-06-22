@@ -33,6 +33,7 @@ const StakeDisplay: FC<Props> = ({
   const [currentIdx, setCurrentIdx] = useState(0)
   const [currentPrice, setCurrentPrice] = useState<number>(0)
   const [titleText, setTitleText] = useState('LIVE!')
+  const [etherscanURL, setEtherscanURL] = useState('https://etherscan.io/')
 
   const specs = () => {
     const max: number = parseFloat(Web3.utils.fromWei(infos.stakesMax))
@@ -47,6 +48,8 @@ const StakeDisplay: FC<Props> = ({
   }
 
   useEffect(() => {
+    if (infos.network == 'ropsten')
+      setEtherscanURL('https://ropsten.etherscan.io/')
     const total = parseInt(Web3.utils.fromWei(stakesTotal))
     const max = parseInt(Web3.utils.fromWei(infos.stakesMax))
     setCurrentIdx(total < max / 100 ? 0 : Math.floor((total / max) * 100) - 1)
@@ -88,7 +91,7 @@ const StakeDisplay: FC<Props> = ({
             })}`}
             infoText={`tokens currently pre-ordered by ${stakesCount} stakers`}
             useGraidentText={true}
-            infoLink={'URL for stats page goes here'}
+            infoLink={etherscanURL + 'token/' + infos.shares}
           />
           <TimerCard
             startDate={infos.startTimestamp}

@@ -36,7 +36,7 @@ const contractABI = [
     anonymous: false,
     inputs: [
       {
-        indexed: true,
+        indexed: false,
         internalType: 'string',
         name: 'newHash',
         type: 'string',
@@ -198,10 +198,23 @@ const contractABI = [
     type: 'function',
   },
   {
+    inputs: [],
+    name: 'sharesAddress',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         internalType: 'address',
-        name: 'sponsor_',
+        name: 'investor_',
         type: 'address',
       },
     ],
@@ -220,7 +233,7 @@ const contractABI = [
     inputs: [
       {
         internalType: 'address',
-        name: 'sponsor_',
+        name: 'investor_',
         type: 'address',
       },
     ],
@@ -339,6 +352,19 @@ const contractABI = [
   {
     inputs: [],
     name: 'unpause',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'extension',
+        type: 'uint256',
+      },
+    ],
+    name: 'extendEndTimestamp',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',

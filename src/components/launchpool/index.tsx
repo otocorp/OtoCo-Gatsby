@@ -94,6 +94,8 @@ export function getCurve(supply: BN, pool: BN, reducer: BN): BN {
 export interface LaunchPoolInterface {
   title?: string
   description?: string
+  network: string
+  shares: string
   startTimestamp: Date
   endTimestamp: Date
   stakesMin: BN
@@ -112,7 +114,7 @@ interface Props {
   network?: string
 }
 
-const LaunchPool: FC<Props> = ({ id, account }: Props) => {
+const LaunchPool: FC<Props> = ({ id, account, network }: Props) => {
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string>('')
   const [stakeModalOpen, setStakeModalOpen] = useState<boolean>(false)
@@ -120,6 +122,7 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
   const [poolInfo, setPoolInfo] = useState<LaunchPoolInterface | undefined>(
     undefined
   )
+  const [poolId, setPoolId] = useState<string>('')
   const [stakesTotal, setStakesTotal] = useState<BN>(new BN(0))
   const [stakesCount, setStakesCount] = useState<number>(0)
   const [sharesTotal, setSharesTotal] = useState<BN>(new BN(0))
@@ -148,7 +151,10 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
   // Fetch general Launch pool info and allowed tokens
   const fetchGeneralInfo = async () => {
     try {
-      const infosContract = await LaunchPoolContract.getContract(id)
+      const sharesAddress = await LaunchPoolContract.getContract(poolId)
+        .methods.sharesAddress()
+        .call({ from: account })
+      const infosContract = await LaunchPoolContract.getContract(poolId)
         .methods.getGeneralInfos()
         .call({ from: account })
       const infosBN = infosContract.map((i: string) => new BN(i))
@@ -165,6 +171,8 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
         maximumPrice: new BN(
           getUnitPrice(infosBN[3], infosBN[3], infosBN[6], infosBN[9])
         ),
+        network: network,
+        shares: sharesAddress,
       }
       console.log(
         infos.startTimestamp.getTime() / 1000,
@@ -182,7 +190,7 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
 
   const fetchMetadata = async (infos: LaunchPoolInterface) => {
     try {
-      const metadata = await LaunchPoolContract.getContract(id)
+      const metadata = await LaunchPoolContract.getContract(poolId)
         .methods.metadata()
         .call({ from: account })
       const res: AxiosResponse = await axios.get(
@@ -333,7 +341,7 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
   }
 
   const refreshPoolStakes = async () => {
-    const stakesList = await LaunchPoolContract.getContract(id)
+    const stakesList = await LaunchPoolContract.getContract(poolId)
       .methods.stakesList()
       .call({ from: account })
     const stks = stakesList.map((s: string) => new BN(s))
@@ -345,7 +353,7 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
     if (!account) return
     if (!allowedTokens) return
     const stakesAccountEvents: EventData[] = await LaunchPoolContract.getContract(
-      id
+      poolId
     ).getPastEvents('Staked', {
       fromBlock: 0,
       toBlock: 'latest',
@@ -378,7 +386,14 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
   }
 
   React.useEffect(() => {
-    if (!id) return
+    if (id && !poolId) {
+      setPoolId(() => id)
+      return
+    }
+    if (!poolId) {
+      setPoolId(() => '') // Fill with the respective pool id
+      return
+    }
     setTimeout(async () => {
       if (account && !poolInfo) {
         await fetchGeneralInfo()
@@ -389,7 +404,7 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
         console.log('Fetched Metadata')
       }
       if (poolInfo && !allowedTokens) {
-        await fetchTokenAllowedList(id)
+        await fetchTokenAllowedList(poolId)
         console.log('Fetched Tokens Allowed')
       }
       if (poolInfo && !stakes) {
@@ -401,7 +416,7 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
         console.log('Fetched Account Stakes')
       }
       if (poolInfo && accountStakes && loading) {
-        LaunchPoolContract.getContract(id).events.allEvents(
+        LaunchPoolContract.getContract(poolId).events.allEvents(
           {
             fromBlock: 'latest',
           },
@@ -415,7 +430,7 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
         setLoading(false)
       }
     }, 0)
-  }, [account, poolInfo, stakes, accountStakes])
+  }, [account, poolId, poolInfo, stakes, accountStakes])
 
   return (
     <div className="container-sm content container-sg">
@@ -423,7 +438,7 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
         <Logo />
       </Link>
 
-      {!error && account && !loading && poolInfo && allowedTokens && (
+      {!error && account && !loading && (
         <StakeDisplay
           infos={poolInfo}
           tokenSum={sharesTotal}
@@ -436,20 +451,20 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
 
       <StakeWidget
         opened={stakeModalOpen}
-        poolId={id}
+        poolId={poolId}
         tokens={allowedTokens}
         infos={poolInfo}
         closeModal={closeModals}
       ></StakeWidget>
       <UnstakeWidget
         opened={unstakeModalOpen}
-        poolId={id}
+        poolId={poolId}
         stakes={stakes}
         accountStakes={accountStakes}
         closeModal={closeModals}
       ></UnstakeWidget>
 
-      {(!account || !id) && (
+      {!poolInfo && (
         <div className="no-account-display">
           <div className="d-flex justify-content-center">
             <div className="column">
@@ -471,7 +486,7 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
                   endDate={new Date(1632499200000)}
                   setTitleText={setTitleText}
                 />
-                {id && (
+                {poolId && (
                   <p>
                     No wallet connected. Please connect your wallet to stake.
                   </p>
@@ -481,7 +496,7 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
           </div>
         </div>
       )}
-      {loading && titleText === '' && (
+      {loading && poolInfo && (
         <div className="d-flex justify-content-center">
           <div className="row">
             <div className="col-12 text-center">Loading</div>
