@@ -395,12 +395,7 @@ const LaunchPool: FC<Props> = ({ id, account, network }: Props) => {
         await fetchMetadata(poolInfo)
       }
       if (poolInfo && !allowedTokens) {
-<<<<<<< HEAD
-        await fetchTokenAllowedList(poolId)
-        console.log('Fetched Tokens Allowed')
-=======
         await fetchTokenAllowedList(id)
->>>>>>> 5542dfa183760f9746a7aec8278bf8f8f69f88a6
       }
       if (poolInfo && !stakes) {
         await refreshPoolStakes()
