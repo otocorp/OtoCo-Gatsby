@@ -384,7 +384,8 @@ const LaunchPool: FC<Props> = ({ id, account, network }: Props) => {
       return
     }
     if (!poolId) {
-      setPoolId(() => '') // Fill with the respective pool id
+      // TODO Fill with the future pool address
+      setPoolId(() => '')
       return
     }
     setTimeout(async () => {
