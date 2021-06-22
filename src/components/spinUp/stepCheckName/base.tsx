@@ -96,7 +96,7 @@ const StepCheckName: FC<Props> = ({
         dispatch({ type: SET_AVAILABLE_NAME })
       }
     } catch (err) {
-      console.log(err)
+      console.error(err)
       setError('unavailable')
     }
     setLoading(false)

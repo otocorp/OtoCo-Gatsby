@@ -83,7 +83,6 @@ const StepActivateCompany: FC<Props> = ({
     const finalName = await SeriesContract.getContract(contract)
       .methods.getName()
       .call({ from: account })
-    console.log('RESULT', contract, finalName)
     dispatch({ type: SET_COMPANY_NAME, payload: finalName })
     dispatch({ type: SET_COMPANY_CONTRACT, payload: contract })
     dispatch({ type: SET_CURRENT_STEP, payload: 5 })

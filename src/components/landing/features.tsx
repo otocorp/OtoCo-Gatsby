@@ -25,7 +25,6 @@ const Features: React.FC<unknown> = () => {
         (accumulator: number, jur) => accumulator + jur.companiesCount,
         0
       )
-      console.log(count)
       setCounter(count)
     }, 0)
   }, [])

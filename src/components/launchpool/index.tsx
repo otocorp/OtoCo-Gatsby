@@ -174,11 +174,6 @@ const LaunchPool: FC<Props> = ({ id, account, network }: Props) => {
         network: network,
         shares: sharesAddress,
       }
-      console.log(
-        infos.startTimestamp.getTime() / 1000,
-        infos.endTimestamp.getTime() / 1000,
-        Date.now() / 1000
-      )
       setStakesTotal(infosBN[4])
       setStakesCount(parseInt(infosBN[5].toString()))
       setPoolInfo(infos)
@@ -295,7 +290,6 @@ const LaunchPool: FC<Props> = ({ id, account, network }: Props) => {
         normalizedStake
       )
       if (stake) {
-        console.log('ACCOUNT STAKES ', accountStakes)
         const listAccountStakes = accountStakes || []
         listAccountStakes.push(stake)
         setAccountStakes(listAccountStakes)
@@ -327,7 +321,6 @@ const LaunchPool: FC<Props> = ({ id, account, network }: Props) => {
         const stakeIdx: number = currentState.findIndex(
           (s) => s.id == parseInt(unstakeEvent.returnValues[0])
         )
-        console.log(stakes.length, stakeIdx)
         currentState[stakeIdx].price = new BN(0)
         currentState[stakeIdx].amount = new BN(0)
         currentState[stakeIdx].shares = new BN(0)
@@ -397,23 +390,23 @@ const LaunchPool: FC<Props> = ({ id, account, network }: Props) => {
     setTimeout(async () => {
       if (account && !poolInfo) {
         await fetchGeneralInfo()
-        console.log('Fetched Pool Info')
       }
       if (poolInfo && !poolInfo?.title) {
         await fetchMetadata(poolInfo)
-        console.log('Fetched Metadata')
       }
       if (poolInfo && !allowedTokens) {
+<<<<<<< HEAD
         await fetchTokenAllowedList(poolId)
         console.log('Fetched Tokens Allowed')
+=======
+        await fetchTokenAllowedList(id)
+>>>>>>> 5542dfa183760f9746a7aec8278bf8f8f69f88a6
       }
       if (poolInfo && !stakes) {
         await refreshPoolStakes()
-        console.log('Fetched Stakes')
       }
       if (poolInfo && stakes && !accountStakes) {
         await refreshAccountStakes()
-        console.log('Fetched Account Stakes')
       }
       if (poolInfo && accountStakes && loading) {
         LaunchPoolContract.getContract(poolId).events.allEvents(
@@ -421,8 +414,7 @@ const LaunchPool: FC<Props> = ({ id, account, network }: Props) => {
             fromBlock: 'latest',
           },
           (err: Error, event: EventData) => {
-            if (err) return console.log(err)
-            console.log(event)
+            if (err) return console.error(err)
             if (event.event === 'Staked') registerStake(event)
             if (event.event === 'Unstaked') registerUnstake(event)
           }

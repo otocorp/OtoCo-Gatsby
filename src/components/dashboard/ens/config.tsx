@@ -80,11 +80,9 @@ const Config: FC<Props> = ({
       return
     }
     try {
-      console.log('WILL VERIFY:', `${selectedName}.${selectedDomain}`)
       const addr = await ens
         .resolver(`${selectedName}.${selectedDomain}`)
         .addr()
-      console.log('OWNER:', addr)
       setDomainOwner(addr)
       setStatus('used')
     } catch (err) {
@@ -109,12 +107,11 @@ const Config: FC<Props> = ({
           multisigDeployed?.contract
         )
         .send(requestInfo, (error, hash: string) => {
-          console.log(hash)
           setTransaction(hash)
           setStatus('claiming')
         })
     } catch (err) {
-      console.log(err)
+      console.error(err)
     }
   }
 

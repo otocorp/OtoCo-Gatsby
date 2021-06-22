@@ -58,7 +58,7 @@ const SeriesENS: FC<Props> = ({
         try {
           reverse = await ens.reverse(address).name()
         } catch (err) {
-          console.log('No reverse set for', address)
+          console.error('No reverse set for', address)
         }
         domains.push({
           domain: `${domain}.otoco.eth`,
@@ -66,7 +66,6 @@ const SeriesENS: FC<Props> = ({
           reverse,
         })
       }
-      console.log('DOMAINS', domains)
       dispatch({
         type: SET_ENS_DOMAINS,
         payload: { domains: domains },

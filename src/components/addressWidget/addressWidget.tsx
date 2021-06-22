@@ -39,7 +39,6 @@ const AddressWidget: FC<Props> = ({ address, network }: Props) => {
         return
       })
       .catch((err: any) => {
-        // console.log("ERR", err)
         // OtocoRegistrar.getContract(network)
         //   .methods.ownedDomains(address)
         //   .call(async (error: any, quantity: number) => {
@@ -65,7 +64,7 @@ const AddressWidget: FC<Props> = ({ address, network }: Props) => {
         displayAddress.substring(address.length - 5, address.length)
       )
     } catch {
-      console.log('Cannot show address...', displayAddress)
+      console.error('Cannot show address...', displayAddress)
     }
   }
 

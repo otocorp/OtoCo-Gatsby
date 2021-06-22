@@ -57,7 +57,7 @@ const Account: FC<Props> = ({
           payload: await Textile.listOutboxMessages(),
         })
       } catch (err) {
-        console.log(err)
+        console.error(err)
         setError('An error ocurred acessing messaging service.')
       }
     }, 0)
