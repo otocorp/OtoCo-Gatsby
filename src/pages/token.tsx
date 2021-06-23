@@ -1,7 +1,7 @@
 import React from 'react'
 import { Router } from '@reach/router'
 import { Helmet } from 'react-helmet'
-// import loadable from '@loadable/component'
+import loadable from '@loadable/component'
 import Layout from '../components/dashboard/layout/layout'
 const Token = loadable(() => import('../components/token/token'))
 
