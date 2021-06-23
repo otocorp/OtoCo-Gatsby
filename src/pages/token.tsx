@@ -1,10 +1,9 @@
 import React from 'react'
 import { Router } from '@reach/router'
 import { Helmet } from 'react-helmet'
-import Token from '../components/token/token'
-import loadable from '@loadable/component'
-// const Layout = loadable(() => import('../components/dashboard/layout/layout'))
+// import loadable from '@loadable/component'
 import Layout from '../components/dashboard/layout/layout'
+const Token = loadable(() => import('../components/token/token'))
 
 interface Props {
   location: Location
