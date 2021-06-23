@@ -96,28 +96,11 @@ module.exports = {
         },
       },
     },
-    // {
-    //   resolve: 'gatsby-plugin-netlify-headers',
-    //   options: {
-    //     allPageHeaders: [
-    //       'Access-Control-Allow-Origin: *',
-    //       'Access-Control-Allow-Methods: GET',
-    //       'Access-Control-Allow-Headers: X-Requested-With, content-type, Authorization',
-    //     ],
-    //   },
-    // },
-    // {
-    //   resolve: 'gatsby-plugin-graphql-codegen',
-    //   options: {
-    //     fileName: `types/graphql-types.d.ts`,
-    //   },
-    // },
     'gatsby-plugin-catch-links',
     'gatsby-plugin-offline',
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-sass',
     'gatsby-plugin-sharp',
-    // 'gatsby-plugin-sitemap',
     'gatsby-plugin-typescript',
     'gatsby-transformer-sharp',
   ],
