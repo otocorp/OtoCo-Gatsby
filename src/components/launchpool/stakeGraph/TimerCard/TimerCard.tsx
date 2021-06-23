@@ -57,7 +57,7 @@ const TimerCard: FC<Props> = ({
   }
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const timer = setInterval(() => {
       if (
         countdownTime === Math.round(startDate.getTime() / 1000) &&
         !(Date.now() < startDate.getTime())
@@ -67,8 +67,8 @@ const TimerCard: FC<Props> = ({
       setTimeLeft(getTimeLeft())
     }, 1000)
 
-    return () => clearTimeout(timer)
-  })
+    return () => clearInterval(timer)
+  }, [])
 
   useEffect(() => {
     switch (stage) {

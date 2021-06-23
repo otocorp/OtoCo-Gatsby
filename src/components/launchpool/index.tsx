@@ -470,8 +470,8 @@ const LaunchPool: FC<Props> = ({ id, account, network }: Props) => {
                 </div>
                 <TimerCard
                   classProp="timer"
-                  startDate={new Date(1624550400000)}
-                  endDate={new Date(1632499200000)}
+                  startDate={new Date(1632240000000)}
+                  endDate={new Date(1640102400000)}
                   setTitleText={setTitleText}
                 />
                 {poolId && (
