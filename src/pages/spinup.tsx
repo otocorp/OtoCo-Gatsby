@@ -1,11 +1,8 @@
 import React from 'react'
-import { Link } from 'gatsby'
-
 import { Helmet } from 'react-helmet'
-// import loadable from '@loadable/component'
-// const Layout = loadable(() => import('../components/layout/layout'))
+import loadable from '@loadable/component'
 import Layout from '../components/layout/layout'
-import SpinUp from '../components/spinUp/spinUp'
+const SpinUp = loadable(() => import('../components/spinUp/spinUp'))
 
 interface Props {
   location: Location

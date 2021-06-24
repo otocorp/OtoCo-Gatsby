@@ -58,13 +58,10 @@ module.exports = {
         name: 'Otoco',
         short_name: 'Otoco',
         description: 'Instantly spin up your real-world LLC here.',
-        homepage_url: 'https://otoco.io',
         start_url: '/',
-        iconPath: '/img/android-chrome-192x192.png',
         background_color: '#0F0F0F',
         theme_color: '#fff',
         display: 'standalone',
-        providedBy: { name: 'Otoco', url: 'https://otoco.io' },
         crossOrigin: 'use-credentials',
         icons: [
           {
@@ -96,28 +93,11 @@ module.exports = {
         },
       },
     },
-    // {
-    //   resolve: 'gatsby-plugin-netlify-headers',
-    //   options: {
-    //     allPageHeaders: [
-    //       'Access-Control-Allow-Origin: *',
-    //       'Access-Control-Allow-Methods: GET',
-    //       'Access-Control-Allow-Headers: X-Requested-With, content-type, Authorization',
-    //     ],
-    //   },
-    // },
-    // {
-    //   resolve: 'gatsby-plugin-graphql-codegen',
-    //   options: {
-    //     fileName: `types/graphql-types.d.ts`,
-    //   },
-    // },
     'gatsby-plugin-catch-links',
     'gatsby-plugin-offline',
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-sass',
     'gatsby-plugin-sharp',
-    // 'gatsby-plugin-sitemap',
     'gatsby-plugin-typescript',
     'gatsby-transformer-sharp',
   ],

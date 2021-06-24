@@ -46,7 +46,6 @@ const Config: FC<Props> = ({ account, network, managing, dispatch }: Props) => {
   }
 
   const handleClickDeploy = async () => {
-    //console.log(token)
     if (name.length < 3 || name.length > 50) {
       setError('Keep token name length biggen than 2 and less than 50')
       return
@@ -81,10 +80,6 @@ const Config: FC<Props> = ({ account, network, managing, dispatch }: Props) => {
       '300000'
     )
     try {
-      console.log(
-        'TOKEN QUANTITY:',
-        new BN(shares).mul(getBNDecimals(decimals)).toString()
-      )
       FactoryContract.getContract(network)
         .methods.createERC20(
           new BN(shares).mul(getBNDecimals(decimals)).toString(),
@@ -93,12 +88,11 @@ const Config: FC<Props> = ({ account, network, managing, dispatch }: Props) => {
           managing.contract
         )
         .send(requestInfo, (error, hash: string) => {
-          if (error) return console.log(error)
-          console.log('deployed token', hash)
+          if (error) return console.error(error)
           setTransaction(hash)
         })
     } catch (err) {
-      console.log(err)
+      console.error(err)
     }
   }
 

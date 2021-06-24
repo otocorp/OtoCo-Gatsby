@@ -1,12 +1,8 @@
 import React from 'react'
-import loadable from '@loadable/component'
-import { withPrefix } from 'gatsby'
 import { Helmet } from 'react-helmet'
-import { Router } from '@reach/router'
-// const Layout = loadable(() => import('../components/dashboard/layout/layout'))
-import Layout from '../components/dashboard/layout/layout'
+import loadable from '@loadable/component'
 const Overview = loadable(() => import('../components/dashboard'))
-// import Overview from '../components/account/overview'
+import Layout from '../components/dashboard/layout/layout'
 
 interface Props {
   location: Location
@@ -16,9 +12,7 @@ const DashpanelIndex: React.FC<Props> = ({ location }: Props) => {
   return (
     <Layout location={location}>
       <Helmet title="Otoco - Dashpanel" defer={false} />
-      {/* <Router> */}
       <Overview></Overview>
-      {/* </Router> */}
     </Layout>
   )
 }

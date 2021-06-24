@@ -6,8 +6,7 @@
 
 .btn-back {
   position: absolute;
-  top: 34px;
-  left: 24px;
+
   border: none !important;
 }
 
@@ -85,6 +84,7 @@
 
     margin: 50px auto;
 
+    z-index: 0;
     .text-wrapper {
       text-align: center;
 

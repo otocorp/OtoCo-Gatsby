@@ -147,21 +147,17 @@ const Textile: TextileInterface = {
       secretHashed
     )
     const signedText = await web3.eth.personal.sign(message, address)
-    console.log('SIGNED:', signedText)
     const signatureHash = web3.utils.keccak256(signedText).replace('0x', '')
-    // console.log('HASH:', signatureHash)
     // The following line converts the hash in hex to an array of 32 integers.
     const sigArray = signatureHash
       .match(/.{2}/g)
       .map((t) => web3.utils.hexToNumber('0x' + t))
-    console.log(sigArray)
     if (sigArray.length !== 32) {
       throw new Error(
         'Hash of signature is not the correct size! Something went wrong!'
       )
     }
     this.privateKey = PrivateKey.fromRawEd25519Seed(Uint8Array.from(sigArray))
-    console.log(this.privateKey.toString())
     // Your app can now use this identity for generating a user Mailbox, Threads, Buckets, etc
     return this.privateKey
   },
@@ -205,10 +201,8 @@ const Textile: TextileInterface = {
     /** Restore any cached user identity first */
     const cachedString = localStorage.getItem(`did:eth:${address.substr(2)}`)
     if (!cachedString) return null
-    // console.log('CACHED', cached)
     const cached: CachedWallet = JSON.parse(cachedString)
     const decrypted = aes256.decrypt(secret, cached.key).toString('utf8')
-    // console.log('DECRYPTED', decrypted)
     this.privateKey = PrivateKey.fromString(decrypted)
     cached.key = this.privateKey.toString()
     return cached
@@ -314,7 +308,6 @@ const Textile: TextileInterface = {
     const now = new Date()
     this.lastAuthorization = now.getTime()
     // await this.user.watchInbox(await this.user.getMailboxID(), this.watchInbox)
-    console.log('AUTHORIZED')
     return this.client
   },
 
@@ -322,9 +315,8 @@ const Textile: TextileInterface = {
     reply?: MailboxEvent | undefined,
     err?: Error | undefined
   ) {
-    if (!reply || !reply.message) return console.log('no message')
+    if (!reply || !reply.message) return
     // if (reply.type !== MailboxEventType.CREATE) {
-    //   console.log('REPLY TYPE', reply.type)
     //   return
     // }
     if (!Textile.privateKey) return
@@ -332,33 +324,33 @@ const Textile: TextileInterface = {
       reply.message,
       Textile.privateKey
     )
-    console.log('Mailbox Callback', messageDecoded)
     Textile.callbackInbox(messageDecoded)
   },
 
   setCallbackInbox: async function (
     callback: (message: DecryptedMailbox) => void
   ) {
-    console.log('CALLBACK SET')
     this.callbackInbox = callback
   },
 
   refreshAuthorization: async function (): Promise<Client | null> {
     const now = new Date()
+    try {
     if (!this.lastAuthorization) return await this.authorize()
     if (this.lastAuthorization + 120000 < now.getTime())
       return await this.authorize()
+    } catch (err) {
+      if (err == "No private key found") console.log('The accound has no Textile key registered.')
+    }
     return null
   },
 
   // MAILBOX
   listInboxMessages: async function (): Promise<DecryptedMailbox[]> {
     await this.refreshAuthorization()
-    // console.log('MESSAGES', this.user, this.privateKey)
     if (!this.user) return []
     if (!this.privateKey) return []
     const messages = await this.user.listInboxMessages({ status: 2 })
-    // console.log('MESSAGES', messages)
     const privateKey = PrivateKey.fromString(this.privateKey.toString())
     const messageList = Promise.all(
       messages.map(async function (m) {
@@ -370,11 +362,9 @@ const Textile: TextileInterface = {
 
   listOutboxMessages: async function (): Promise<DecryptedMailbox[]> {
     await this.refreshAuthorization()
-    // console.log('MESSAGES', this.user, this.privateKey)
     if (!this.user) throw 'No user defined'
     if (!this.privateKey) throw 'No private key present'
     const messages = await this.user.listSentboxMessages()
-    // console.log('MESSAGES OUT', messages)
     const privateKey = PrivateKey.fromString(this.privateKey.toString())
     const messageList = Promise.all(
       messages.map(async function (m) {

@@ -16,15 +16,35 @@
 /* Modal Content/Box */
 .modal-content {
   background-color: $midnight-blue-1;
-  margin: 15% auto; /* 15% from the top and centered */
+  margin: 15vh auto; /* 15% from the top and centered */
   padding: 20px;
   width: 60%; /* Could be more or less, depending on screen size */
   border-radius: 12px;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 1115px) {
+  .modal-content {
+    width: 75%;
+  }
+}
+
+@media (max-width: 895px) {
   .modal-content {
     width: 80%;
+  }
+}
+
+@media (max-width: 850px) {
+  .modal-content {
+    .table-header {
+      font-size: 0.6rem !important;
+    }
+  }
+}
+
+@media (max-width: 450px) {
+  .modal-content {
+    width: 85%;
   }
 }
 

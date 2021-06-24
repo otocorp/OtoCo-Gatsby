@@ -106,7 +106,6 @@ const Shares: FC<Props> = ({
         }
         result.push(owner)
       }
-      console.log(result)
       setOwners(result)
     }, 0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -136,8 +135,7 @@ const Shares: FC<Props> = ({
     RegistryContract.getContract(network)
       .methods.setRecord(managing.contract, 1, ZERO_ADDRESS)
       .send(requestInfo, (error, hash: string) => {
-        if (error) return console.log(error)
-        console.log('Detached token', hash)
+        if (error) return console.error(error)
       })
   }
   const toggleAdvanced = async () => {

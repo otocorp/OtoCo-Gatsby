@@ -10,6 +10,8 @@ import LaunchPoolContract from '../../smart-contracts/LaunchPool'
 import ERC20Contract from '../../smart-contracts/OtocoToken'
 import '../style.scss'
 
+import Logo from '../logo/logo'
+
 import StakeDisplay from './stakeGraph/StakeDisplay/StakeDisplay'
 import TimerCard from './stakeGraph/TimerCard/TimerCard'
 
@@ -92,6 +94,8 @@ export function getCurve(supply: BN, pool: BN, reducer: BN): BN {
 export interface LaunchPoolInterface {
   title?: string
   description?: string
+  network: string
+  shares: string
   startTimestamp: Date
   endTimestamp: Date
   stakesMin: BN
@@ -110,7 +114,7 @@ interface Props {
   network?: string
 }
 
-const LaunchPool: FC<Props> = ({ id, account }: Props) => {
+const LaunchPool: FC<Props> = ({ id, account, network }: Props) => {
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string>('')
   const [stakeModalOpen, setStakeModalOpen] = useState<boolean>(false)
@@ -118,6 +122,7 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
   const [poolInfo, setPoolInfo] = useState<LaunchPoolInterface | undefined>(
     undefined
   )
+  const [poolId, setPoolId] = useState<string>('')
   const [stakesTotal, setStakesTotal] = useState<BN>(new BN(0))
   const [stakesCount, setStakesCount] = useState<number>(0)
   const [sharesTotal, setSharesTotal] = useState<BN>(new BN(0))
@@ -129,10 +134,12 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
   const [titleText, setTitleText] = useState<string>('')
 
   const openStakeModal = () => {
+    refreshAccountStakes()
     setStakeModalOpen(true)
   }
 
   const openUnstakeModal = () => {
+    refreshAccountStakes()
     setUnstakeModalOpen(true)
   }
 
@@ -144,7 +151,10 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
   // Fetch general Launch pool info and allowed tokens
   const fetchGeneralInfo = async () => {
     try {
-      const infosContract = await LaunchPoolContract.getContract(id)
+      const sharesAddress = await LaunchPoolContract.getContract(poolId)
+        .methods.sharesAddress()
+        .call({ from: account })
+      const infosContract = await LaunchPoolContract.getContract(poolId)
         .methods.getGeneralInfos()
         .call({ from: account })
       const infosBN = infosContract.map((i: string) => new BN(i))
@@ -161,12 +171,9 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
         maximumPrice: new BN(
           getUnitPrice(infosBN[3], infosBN[3], infosBN[6], infosBN[9])
         ),
+        network: network,
+        shares: sharesAddress,
       }
-      console.log(
-        infos.startTimestamp.getTime() / 1000,
-        infos.endTimestamp.getTime() / 1000,
-        Date.now() / 1000
-      )
       setStakesTotal(infosBN[4])
       setStakesCount(parseInt(infosBN[5].toString()))
       setPoolInfo(infos)
@@ -178,7 +185,7 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
 
   const fetchMetadata = async (infos: LaunchPoolInterface) => {
     try {
-      const metadata = await LaunchPoolContract.getContract(id)
+      const metadata = await LaunchPoolContract.getContract(poolId)
         .methods.metadata()
         .call({ from: account })
       const res: AxiosResponse = await axios.get(
@@ -268,7 +275,6 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
     if (!stakes) return
     if (!poolInfo) return
     if (!allowedTokens) return
-    if (err) return console.log(err.message)
     // In case of duplicated events
     if (parseInt(stakeEvent.returnValues[0]) < stakes.length) return
     const token = allowedTokens.find(
@@ -284,7 +290,6 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
         normalizedStake
       )
       if (stake) {
-        console.log('ACCOUNT STAKES ', accountStakes)
         const listAccountStakes = accountStakes || []
         listAccountStakes.push(stake)
         setAccountStakes(listAccountStakes)
@@ -303,7 +308,6 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
     if (!stakes) return
     if (!poolInfo) return
     if (!allowedTokens) return
-    if (err) return console.log(err.message)
     if (stakes[parseInt(unstakeEvent.returnValues[0])].eq(new BN(0))) return
     setStakes((prevState) => {
       if (!prevState) return []
@@ -317,7 +321,6 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
         const stakeIdx: number = currentState.findIndex(
           (s) => s.id == parseInt(unstakeEvent.returnValues[0])
         )
-        console.log(stakes.length, stakeIdx)
         currentState[stakeIdx].price = new BN(0)
         currentState[stakeIdx].amount = new BN(0)
         currentState[stakeIdx].shares = new BN(0)
@@ -331,7 +334,7 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
   }
 
   const refreshPoolStakes = async () => {
-    const stakesList = await LaunchPoolContract.getContract(id)
+    const stakesList = await LaunchPoolContract.getContract(poolId)
       .methods.stakesList()
       .call({ from: account })
     const stks = stakesList.map((s: string) => new BN(s))
@@ -343,7 +346,7 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
     if (!account) return
     if (!allowedTokens) return
     const stakesAccountEvents: EventData[] = await LaunchPoolContract.getContract(
-      id
+      poolId
     ).getPastEvents('Staked', {
       fromBlock: 0,
       toBlock: 'latest',
@@ -376,36 +379,38 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
   }
 
   React.useEffect(() => {
-    if (!id) return
+    if (id && !poolId) {
+      setPoolId(() => id)
+      return
+    }
+    if (!poolId) {
+      // TODO Fill with the future pool address
+      setPoolId(() => '')
+      return
+    }
     setTimeout(async () => {
       if (account && !poolInfo) {
         await fetchGeneralInfo()
-        console.log('Fetched Pool Info')
       }
       if (poolInfo && !poolInfo?.title) {
         await fetchMetadata(poolInfo)
-        console.log('Fetched Metadata')
       }
       if (poolInfo && !allowedTokens) {
         await fetchTokenAllowedList(id)
-        console.log('Fetched Tokens Allowed')
       }
       if (poolInfo && !stakes) {
         await refreshPoolStakes()
-        console.log('Fetched Stakes')
       }
       if (poolInfo && stakes && !accountStakes) {
         await refreshAccountStakes()
-        console.log('Fetched Account Stakes')
       }
       if (poolInfo && accountStakes && loading) {
-        LaunchPoolContract.getContract(id).events.allEvents(
+        LaunchPoolContract.getContract(poolId).events.allEvents(
           {
             fromBlock: 'latest',
           },
           (err: Error, event: EventData) => {
-            if (err) return console.log(err)
-            console.log(event)
+            if (err) return console.error(err)
             if (event.event === 'Staked') registerStake(event)
             if (event.event === 'Unstaked') registerUnstake(event)
           }
@@ -413,15 +418,15 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
         setLoading(false)
       }
     }, 0)
-  }, [account, poolInfo, stakes, accountStakes])
+  }, [account, poolId, poolInfo, stakes, accountStakes])
 
   return (
     <div className="container-sm content container-sg">
       <Link className="btn btn-back btn-primary-outline btn-sm" to={`/`}>
-        <ChevronLeft></ChevronLeft>
-        <span style={{ paddingLeft: '10px' }}>Back</span>
+        <Logo />
       </Link>
-      {!error && account && !loading && poolInfo && allowedTokens && (
+
+      {!error && account && !loading && (
         <StakeDisplay
           infos={poolInfo}
           tokenSum={sharesTotal}
@@ -434,19 +439,20 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
 
       <StakeWidget
         opened={stakeModalOpen}
-        poolId={id}
+        poolId={poolId}
         tokens={allowedTokens}
+        infos={poolInfo}
         closeModal={closeModals}
       ></StakeWidget>
       <UnstakeWidget
         opened={unstakeModalOpen}
-        poolId={id}
+        poolId={poolId}
         stakes={stakes}
         accountStakes={accountStakes}
         closeModal={closeModals}
       ></UnstakeWidget>
 
-      {(!account || !id) && (
+      {!poolInfo && (
         <div className="no-account-display">
           <div className="d-flex justify-content-center">
             <div className="column">
@@ -468,7 +474,7 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
                   endDate={new Date(1640102400000)}
                   setTitleText={setTitleText}
                 />
-                {id && (
+                {poolId && (
                   <p>
                     No wallet connected. Please connect your wallet to stake.
                   </p>
@@ -478,7 +484,7 @@ const LaunchPool: FC<Props> = ({ id, account }: Props) => {
           </div>
         </div>
       )}
-      {loading && titleText === '' && (
+      {loading && poolInfo && (
         <div className="d-flex justify-content-center">
           <div className="row">
             <div className="col-12 text-center">Loading</div>

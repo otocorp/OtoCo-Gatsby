@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { QuestionCircle } from 'react-bootstrap-icons'
+
 //style
 import './InfoCard.scss'
 
@@ -8,6 +10,7 @@ type Props = {
   titleText: string
   infoText: string
   useGraidentText?: boolean
+  infoLink?: string
 }
 
 const InfoCard = ({
@@ -15,6 +18,7 @@ const InfoCard = ({
   titleText,
   infoText,
   useGraidentText = false,
+  infoLink,
 }: Props) => (
   <div className={`info-card ${classProp}`}>
     <div className={'text-wrapper'}>
@@ -24,6 +28,16 @@ const InfoCard = ({
         }
       >
         {titleText}
+        {infoLink && (
+          <a
+            className={'info-link'}
+            href={infoLink}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <QuestionCircle />
+          </a>
+        )}
       </span>
       <p>{infoText}</p>
     </div>

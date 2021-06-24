@@ -28,20 +28,17 @@ export const sendMultisigTransaction = async (
     )
     gasPrice = web3.utils.toWei((gasFees.data.fast * 0.1).toString(), 'gwei')
   } catch (err) {
-    console.log('Could not fetch gas fee for transaction.')
+    console.error('Could not fetch gas fee for transaction.')
   }
-  console.log('GAS PRICE', gasPrice)
   // Get wallet nonce
   const nonce = await GnosisSafe.getContract(safeContract)
     .methods.nonce()
     .call({ from: account })
-  console.log('NONCE', nonce)
   // Encode function call
   const encodedParameters = web3.eth.abi.encodeFunctionCall(
     abi, // Abi for Initialize wallet with Owners config
     params
   )
-  console.log('Encoded Function Call', encodedParameters)
   // Estimate Safe TX gas
   const safeGas = await estimateSafeTxGas(
     safeContract,
@@ -50,7 +47,6 @@ export const sendMultisigTransaction = async (
     '0',
     0 // CALL
   )
-  console.log('SAFE GAS', safeGas)
   // https://docs.gnosis.io/safe/docs/docs5/#pre-validated-signatures
   const sigs = `0x000000000000000000000000${account.replace(
     '0x',
@@ -73,13 +69,11 @@ export const sendMultisigTransaction = async (
   }
   // Get transaction HASH
   // const transactionHash = await getTransactionHash(txArgs)
-  // console.log('TRANSACTION HASH', transactionHash)
   // const signature = await tryOffchainSigning(
   //   transactionHash,
   //   { ...txArgs, safeAddress: safeContract },
   //   false
   // )
-  // console.log('SIGNATURE:', signature)
   return new Promise((resolve, reject) => {
     GnosisSafe.getContract(safeContract)
       .methods.execTransaction(
@@ -102,7 +96,6 @@ export const sendMultisigTransaction = async (
         },
         (error: unknown, hash: string) => {
           if (error) return reject(error)
-          console.log(hash)
           resolve(hash)
         }
       )

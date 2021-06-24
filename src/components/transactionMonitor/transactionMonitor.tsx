@@ -69,7 +69,6 @@ const TransactionMonitor: FC<Props> = ({
         if (receipt) {
           setBlockNumber(receipt.blockNumber)
           web3.eth.getBlockNumber((error, blockNum) => {
-            //console.log(blockNum)
             setConfirmations(Math.max(0, blockNum - receipt.blockNumber))
             setReceipt(receipt)
             if (blockNum - receipt.blockNumber <= 0)
@@ -79,7 +78,7 @@ const TransactionMonitor: FC<Props> = ({
           })
         } else setMessage('Waiting to be mined')
       } catch (err) {
-        console.log(err)
+        console.error(err)
         if (hash.length !== 66) {
           setError('Not a valid transaction hash')
         }

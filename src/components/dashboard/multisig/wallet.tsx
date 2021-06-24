@@ -118,7 +118,7 @@ const Wallet: FC<Props> = ({
         }
       }
     } catch (err) {
-      console.log('Error getting token balances')
+      console.error('Error getting token balances')
     }
     // Adding ETH balance
     const ethBalance = await web3.eth.getBalance(multisigAddress)

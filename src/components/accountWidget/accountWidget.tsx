@@ -92,7 +92,6 @@ const AccountWidget: FC<Props> = ({
           payload: PrivateKey.fromString(cached.key),
         })
         // Textile.setCallbackInbox(callbackInboxNewMessage)
-        // console.log(cached.key)
       } else {
         dispatch({ type: SET_PRIVATEKEY, payload: null })
         dispatch({ type: SET_ALIAS, payload: null })
@@ -124,7 +123,6 @@ const AccountWidget: FC<Props> = ({
   }
 
   const callbackInboxNewMessage = (message: DecryptedMailbox) => {
-    console.log('PASSOU NO CALLBACK', message)
     dispatch({
       type: ADD_INBOX_MESSAGES,
       payload: message,

@@ -10,11 +10,13 @@ type Props = {
   startDate: Date
   endDate: Date
   //optional
+  stage?: number
   classProp?: string
   setTitleText?: (title: string) => void
 }
 
 const TimerCard: FC<Props> = ({
+  stage,
   classProp,
   startDate,
   endDate,
@@ -55,7 +57,7 @@ const TimerCard: FC<Props> = ({
   }
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const timer = setInterval(() => {
       if (
         countdownTime === Math.round(startDate.getTime() / 1000) &&
         !(Date.now() < startDate.getTime())
@@ -65,18 +67,34 @@ const TimerCard: FC<Props> = ({
       setTimeLeft(getTimeLeft())
     }, 1000)
 
-    return () => clearTimeout(timer)
-  })
+    return () => clearInterval(timer)
+  }, [])
 
   useEffect(() => {
-    if (!timeLeft.isOver) {
-      timeLeft.seconds === -1
-        ? setTimeDisplay('Loading...')
-        : setTimeDisplay(
-            `${timeLeft.days}d ${timeLeft.hours}h ${timeLeft.minutes}m ${timeLeft.seconds}s`
-          )
-    } else if (timeLeft.isOver) {
-      setTimeDisplay('Staking is over.')
+    switch (stage) {
+      case 2:
+        setTimeDisplay('Staking is paused.')
+        break
+      case 3:
+        setTimeDisplay('Calculating stakes.')
+        break
+      case 4:
+        setTimeDisplay('Distributing stakes.')
+        break
+      case 5:
+        setTimeDisplay('Pre-order over.')
+        break
+      default:
+        if (!timeLeft.isOver) {
+          timeLeft.seconds === -1
+            ? setTimeDisplay('Loading...')
+            : setTimeDisplay(
+                `${timeLeft.days}d ${timeLeft.hours}h ${timeLeft.minutes}m ${timeLeft.seconds}s`
+              )
+        } else if (timeLeft.isOver) {
+          setTimeDisplay('Staking is over.')
+        }
+        break
     }
 
     switch (getTimePeriod(startDate, endDate)) {
@@ -87,17 +105,14 @@ const TimerCard: FC<Props> = ({
         break
       case 'during':
         setTimeText('ending')
-        setTitleText && setTitleText('LIVE!')
-
+        setTitleText && stage !== 2
+          ? setTitleText('LIVE!')
+          : setTitleText('paused.')
         break
-      case 'after':
+      default:
         setTimeText('closed')
         setTitleText && setTitleText('over.')
 
-        break
-      default:
-        if (Date.now() < startDate.getTime()) setTimeText('starting')
-        else if (Date.now() < endDate.getTime()) setTimeText('ending')
         break
     }
   }, [timeLeft])

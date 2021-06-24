@@ -39,7 +39,6 @@ const Master: FC<Props> = ({ account, network, dispatch }: Props) => {
       if (!account) return
       const web3: Web3 = window.web3
       const accounts = await web3.eth.getAccounts()
-      console.log(network)
       if (
         (await MainContract.getContract(network, 'us_de')
           .methods.owner()
@@ -82,10 +81,6 @@ const Master: FC<Props> = ({ account, network, dispatch }: Props) => {
 
   const sendTaxChange = async (jurisdiction: string) => {
     try {
-      console.log(
-        jurisdiction,
-        new BN(amountTax).mul(getBNDecimals(18)).toString()
-      )
       MainContract.getContract(network, jurisdiction)
         .methods.changeSeriesFee(
           new BN(amountTax).mul(getBNDecimals(18)).toString()
@@ -100,10 +95,6 @@ const Master: FC<Props> = ({ account, network, dispatch }: Props) => {
 
   const sendWithdraw = async (jurisdiction: string) => {
     try {
-      console.log(
-        jurisdiction,
-        new BN(amountTax).mul(getBNDecimals(18)).toString()
-      )
       MainContract.getContract(network, jurisdiction)
         .methods.withdrawTkn()
         .send({ from: account }, (error, hash) => {

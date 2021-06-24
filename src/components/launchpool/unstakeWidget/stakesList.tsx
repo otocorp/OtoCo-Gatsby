@@ -18,15 +18,27 @@ const StakeList = ({ stakes, handleUnstake }: ListMessagesProps) => {
       {stakes.map((m, idx) => (
         <tr className="small" key={m.id}>
           <td>#{m.id}</td>
-          <td className="text-end">
+          <td className="text-end d-none d-md-table-cell">
             {accounting.formatMoney(Web3.utils.fromWei(m.amount), '')}{' '}
             {m.token.symbol}
           </td>
-          <td className="text-end">
+          <td className="text-end d-none d-md-table-cell">
             {accounting.formatMoney(Web3.utils.fromWei(m.price), '', 4)} USD
           </td>
-          <td className="text-end">
+          <td className="text-end d-none d-md-table-cell">
             {accounting.formatMoney(Web3.utils.fromWei(m.shares), '')}
+          </td>
+          <td className="text-end d-table-cel d-md-none">
+            <div>
+              {accounting.formatMoney(Web3.utils.fromWei(m.amount), '')}{' '}
+              {m.token.symbol}
+            </div>
+            <div style={{ borderBottom: '1px solid' }}>
+              x {accounting.formatMoney(Web3.utils.fromWei(m.price), '', 4)} USD
+            </div>
+            <div>
+              {accounting.formatMoney(Web3.utils.fromWei(m.shares), '')}
+            </div>
           </td>
           <td className="text-end">
             {m.amount.gt(new BN(0)) && (

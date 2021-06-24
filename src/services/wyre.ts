@@ -32,14 +32,6 @@ export const requestPaymentWyre = async (
 }> => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log({
-        Authorization:
-          env == WyreEnv.PROD
-            ? process.env.GATSBY_SENDWYRE_KEY
-            : process.env.GATSBY_TESTWYRE_KEY,
-        'Content-Type': 'application/json',
-      })
-
       const res = await axios.post(
         `${env}/v3/orders/reserve`,
         {
@@ -79,7 +71,6 @@ export const requestPaymentWyre = async (
           },
         }
       )
-      console.log(res)
       const wyre = Wyre()
       const widget = new wyre.Widget({
         debug: true,
@@ -101,7 +92,6 @@ export const requestPaymentWyre = async (
       }
       widget.open()
       widget.on('paymentSuccess', async (e) => {
-        console.log('event', e)
         const order = await axios.get(`${env}/v3/orders/${e.data.orderId}`)
         resolve({
           timestamp: order.data.createdAt,
@@ -115,7 +105,6 @@ export const requestPaymentWyre = async (
           } else {
             widget.removeAllListeners()
             widget.getTargetWindow().close()
-            console.log('Cleared Widget Listeners')
             reject()
           }
         } catch (err) {
@@ -124,7 +113,7 @@ export const requestPaymentWyre = async (
       }
       checkWindowOpen()
     } catch (err) {
-      console.log(err)
+      console.error(err)
       reject(err)
     }
   })

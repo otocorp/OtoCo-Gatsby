@@ -50,7 +50,6 @@ const UnstakeWidget: FC<Props> = ({
             else resolve(hash)
           })
       })
-      console.log(hash)
       setHash(hash)
     } catch (err) {
       console.error('Unstaking error', err)
@@ -69,7 +68,6 @@ const UnstakeWidget: FC<Props> = ({
   }
 
   React.useEffect(() => {
-    console.log('SHOW ==>> ', opened)
     if (opened) {
       setTimeout(() => {
         setCountdown(true)
@@ -101,11 +99,36 @@ const UnstakeWidget: FC<Props> = ({
               <table className="table table-hover mb-5">
                 <thead>
                   <tr>
-                    <th scope="col">Queue</th>
-                    <th scope="col">Amount</th>
-                    <th scope="col">Current Price</th>
-                    <th scope="col">Shares</th>
-                    <th scope="col">Unstake</th>
+                    <th scope="col" className={'table-header'}>
+                      Queue
+                    </th>
+                    <th
+                      scope="col"
+                      className="text-end d-none d-md-table-cell table-header"
+                    >
+                      Amount
+                    </th>
+                    <th
+                      scope="col"
+                      className="text-end d-none d-md-table-cell table-header"
+                    >
+                      Your Purchase Price
+                    </th>
+                    <th
+                      scope="col"
+                      className="text-end d-none d-md-table-cell table-header"
+                    >
+                      Number of Tokens
+                    </th>
+                    <th
+                      scope="col"
+                      className="text-end d-table-cel d-md-none table-header"
+                    >
+                      Info
+                    </th>
+                    <th scope="col" className="text-end table-header">
+                      Unstake
+                    </th>
                   </tr>
                 </thead>
                 <tbody>

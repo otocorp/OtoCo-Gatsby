@@ -2,7 +2,6 @@ import React from 'react'
 import loadable from '@loadable/component'
 import { Helmet } from 'react-helmet'
 import { Router } from '@reach/router'
-// const Layout = loadable(() => import('../components/dashboard/layout/layout'))
 import Layout from '../components/dashboard/layout/layout'
 const LaunchPool = loadable(() => import('../components/launchpool'))
 
