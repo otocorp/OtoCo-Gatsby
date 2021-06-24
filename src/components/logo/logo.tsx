@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import { Link } from 'gatsby'
-import './style.scss'
 import logo from '../../../public/img/logo.svg'
+import './style.scss'
 
 const Logo: FC = ({}) => {
   return (

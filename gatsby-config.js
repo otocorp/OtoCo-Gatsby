@@ -58,13 +58,10 @@ module.exports = {
         name: 'Otoco',
         short_name: 'Otoco',
         description: 'Instantly spin up your real-world LLC here.',
-        homepage_url: 'https://otoco.io',
         start_url: '/',
-        iconPath: '/img/android-chrome-192x192.png',
         background_color: '#0F0F0F',
         theme_color: '#fff',
         display: 'standalone',
-        providedBy: { name: 'Otoco', url: 'https://otoco.io' },
         crossOrigin: 'use-credentials',
         icons: [
           {

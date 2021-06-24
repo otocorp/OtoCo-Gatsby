@@ -1,8 +1,8 @@
 import React from 'react'
-import loadable from '@loadable/component'
 import { Helmet } from 'react-helmet'
-import Layout from '../components/dashboard/layout/layout'
+import loadable from '@loadable/component'
 const Overview = loadable(() => import('../components/dashboard'))
+import Layout from '../components/dashboard/layout/layout'
 
 interface Props {
   location: Location

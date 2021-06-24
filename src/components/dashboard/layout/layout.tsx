@@ -1,15 +1,12 @@
 import React, { useEffect } from 'react'
-import Sidebar from '../sidebar/index'
-import Footer from '../../footer/footer'
-// const AccountWidget from '../../accountWidget/accountWidget'
 import loadable from '@loadable/component'
 const AccountWidget = loadable(
   () => import('../../accountWidget/accountWidget')
-)
-
-import './style.scss'
-import Logo from '../../logo/logo'
-
+  )
+  import Footer from '../../footer/footer'
+  import Sidebar from '../sidebar/index'
+  import './style.scss'
+  
 interface Props {
   children?: React.ReactNode
 }

@@ -335,9 +335,13 @@ const Textile: TextileInterface = {
 
   refreshAuthorization: async function (): Promise<Client | null> {
     const now = new Date()
+    try {
     if (!this.lastAuthorization) return await this.authorize()
     if (this.lastAuthorization + 120000 < now.getTime())
       return await this.authorize()
+    } catch (err) {
+      if (err == "No private key found") console.log('The accound has no Textile key registered.')
+    }
     return null
   },
 
