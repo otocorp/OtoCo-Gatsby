@@ -13,12 +13,15 @@ interface Props {
   dispatch: Dispatch<ManagementActionTypes>
 }
 
+import doaDE from '../../../../static/pdfs/DOA_de.pdf'
+import doaWY from '../../../../static/pdfs/DOA_wy.pdf'
+
 const pdfs = {
   de: {
-    agreement: require('../../../../static/pdfs/DOA_de.pdf'),
+    agreement: doaDE,
   },
   wy: {
-    agreement: require('../../../../static/pdfs/DOA_wy.pdf'),
+    agreement: doaWY,
   },
 }
 
@@ -42,7 +45,7 @@ const SeriesDocuments: FC<Props> = ({ managing, dispatch }: Props) => {
       .replace(/[\u0300-\u036f]/g, '')
   }
 
-  function saveByteArray(reportName, byte) {
+  function saveByteArray(reportName:string, byte:Uint8Array) {
     const blob = new Blob([byte], { type: 'application/pdf' })
     const link = document.createElement('a')
     link.href = window.URL.createObjectURL(blob)
@@ -54,14 +57,13 @@ const SeriesDocuments: FC<Props> = ({ managing, dispatch }: Props) => {
   const exportPDF = async () => {
     if (!managing) return
     const prefix = managing.jurisdiction.substring(0, 2).toLowerCase()
-    const existingPdfBytes = await fetch(pdfs[prefix].agreement).then((res) =>
-      res.arrayBuffer()
-    )
+    const fetchedAgreement = await fetch(pdfs[prefix].agreement)
+    const pdfBuffer = await fetchedAgreement.arrayBuffer()
     let seriesName = removeSpecial(managing.name)
     if (prefix === 'wy')
       seriesName = 'OTOCO WY LLC - ' + removeSpecial(managing.name)
 
-    const pdfDoc = await PDFDocument.load(existingPdfBytes)
+    const pdfDoc = await PDFDocument.load(pdfBuffer)
     const form = pdfDoc.getForm()
     const TimesBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold)
     const Times = await pdfDoc.embedFont(StandardFonts.TimesRoman)

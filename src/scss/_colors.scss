@@ -42,10 +42,10 @@ $accent-purple-brightest: #b3b5ff;
 // Start with base lightness value of 12
 // Hex: #11142D
 $lightness-base: 12;
-$midnight-blue-0: hsla(232, 46, $lightness-base * 1, 1);
+$midnight-blue-0: hsla(232, 46%, $lightness-base * 1%, 1);
 // $midnight-blue-0: #101430;
-$midnight-blue-1: hsla(232, 46, $lightness-base * 1.5, 1);
-$midnight-blue-2: hsla(232, 46, $lightness-base * 2, 1);
+$midnight-blue-1: hsla(232, 46%, $lightness-base * 1.5%, 1);
+$midnight-blue-2: hsla(232, 46%, $lightness-base * 2%, 1);
 
 // Elevations / box-shadow style
 // (Not colors but don't see a better place to do it)
